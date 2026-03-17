@@ -5,7 +5,7 @@ This directory contains an experimental cross-platform C# CLI rewrite baseline.
 ## Commands
 
 ```bash
-cd /home/runner/work/winmerge/winmerge/csharp/WinMerge.CrossPlatform
+cd csharp/WinMerge.CrossPlatform
 dotnet run -- file-diff <leftFile> <rightFile>
 dotnet run -- folder-diff <leftFolder> <rightFolder>
 dotnet run -- merge3 <baseFile> <leftFile> <rightFile> [--resolve left|right|base]
