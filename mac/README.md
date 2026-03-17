@@ -110,6 +110,7 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 - Difference highlighting (added, removed, modified lines)
 - **Enhanced statistics** showing lines added (+), removed (-), and modified (~)
 - Navigation between differences (⌘↑ / ⌘↓)
+- **Go to Line** navigation (⌘L) for left/right/both panes
 - File open dialog for selecting files to compare
 - Support for multiple diff algorithms (Myers, Patience, Histogram, Minimal)
 - Algorithm selection from the UI

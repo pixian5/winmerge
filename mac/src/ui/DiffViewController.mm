@@ -428,6 +428,79 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     }
 }
 
+- (NSUInteger)lineCountForTextView:(NSTextView *)textView {
+    NSString *text = textView.string ?: @"";
+    if (text.length == 0) return 0;
+
+    NSUInteger lines = 0;
+    NSUInteger charIndex = 0;
+    while (charIndex < text.length) {
+        NSRange lineRange = [text lineRangeForRange:NSMakeRange(charIndex, 0)];
+        charIndex = NSMaxRange(lineRange);
+        lines++;
+    }
+    return lines;
+}
+
+- (void)presentGoToLineDialog {
+    NSUInteger leftLines = [self lineCountForTextView:self.leftTextView];
+    NSUInteger rightLines = [self lineCountForTextView:self.rightTextView];
+    NSUInteger maxLines = MAX(leftLines, rightLines);
+    if (maxLines == 0) {
+        [self showAlert:@"No content to navigate. Open files and run compare first."];
+        return;
+    }
+
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"Go to Line";
+    alert.informativeText = [NSString stringWithFormat:@"Enter a line number (1-%lu).", (unsigned long)maxLines];
+    [alert addButtonWithTitle:@"Go"];
+    [alert addButtonWithTitle:@"Cancel"];
+
+    NSTextField *lineField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 220, 24)];
+    lineField.placeholderString = @"Line number";
+
+    NSPopUpButton *panePopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(0, 0, 220, 26) pullsDown:NO];
+    [panePopup addItemsWithTitles:@[@"Both panes", @"Left pane", @"Right pane"]];
+    [panePopup selectItemAtIndex:0];
+
+    NSStackView *accessory = [NSStackView stackViewWithViews:@[lineField, panePopup]];
+    accessory.orientation = NSUserInterfaceLayoutOrientationVertical;
+    accessory.spacing = 8;
+    alert.accessoryView = accessory;
+
+    if (![self.view.window makeFirstResponder:lineField]) {
+        [lineField selectText:nil];
+    }
+
+    NSModalResponse response = [alert runModal];
+    if (response != NSAlertFirstButtonReturn) return;
+
+    NSInteger line = lineField.integerValue;
+    if (line < 1 || line > (NSInteger)maxLines) {
+        [self showAlert:[NSString stringWithFormat:@"Line number must be between 1 and %lu.", (unsigned long)maxLines]];
+        return;
+    }
+
+    NSUInteger lineIndex = (NSUInteger)(line - 1);
+    switch (panePopup.indexOfSelectedItem) {
+        case 1:
+            [self.leftTextView scrollToLine:lineIndex];
+            self.statusLabel.stringValue = [NSString stringWithFormat:@"Jumped to line %ld in left pane", (long)line];
+            break;
+        case 2:
+            [self.rightTextView scrollToLine:lineIndex];
+            self.statusLabel.stringValue = [NSString stringWithFormat:@"Jumped to line %ld in right pane", (long)line];
+            break;
+        case 0:
+        default:
+            [self.leftTextView scrollToLine:lineIndex];
+            [self.rightTextView scrollToLine:lineIndex];
+            self.statusLabel.stringValue = [NSString stringWithFormat:@"Jumped to line %ld in both panes", (long)line];
+            break;
+    }
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 #if !__has_feature(objc_arc)

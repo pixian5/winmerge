@@ -107,6 +107,10 @@
     [editMenu addItemWithTitle:@"Find Previous"
                         action:@selector(performFindPanelAction:)
                  keyEquivalent:@"G"];
+    [editMenu addItem:[NSMenuItem separatorItem]];
+    [editMenu addItemWithTitle:@"Go to Line…"
+                        action:@selector(goToLine:)
+                 keyEquivalent:@"l"];
     editMenuItem.submenu = editMenu;
     [mainMenu addItem:editMenuItem];
     [NSApp setServicesMenu:editMenu];
@@ -185,6 +189,10 @@
 
 - (void)prevDiff:(id)sender {
     [self.diffViewController navigateToPrevDiff];
+}
+
+- (void)goToLine:(id)sender {
+    [self.diffViewController presentGoToLineDialog];
 }
 
 - (void)saveLeftFile:(id)sender {

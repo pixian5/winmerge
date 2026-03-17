@@ -27,6 +27,9 @@
 - (void)saveLeftFile;
 - (void)saveRightFile;
 
+// Navigation helpers
+- (void)presentGoToLineDialog;
+
 // Merge operations
 - (void)copySelectionToLeft;
 - (void)copySelectionToRight;
