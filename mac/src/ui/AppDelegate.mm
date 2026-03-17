@@ -16,7 +16,12 @@
 
     // If files were passed as command-line arguments, compare them
     NSArray *args = [[NSProcessInfo processInfo] arguments];
-    if (args.count >= 3) {
+    if (args.count >= 4) {
+        NSString *basePath = args[1];
+        NSString *leftPath = args[2];
+        NSString *rightPath = args[3];
+        [self.diffViewController mergeBaseFile:basePath leftFile:leftPath rightFile:rightPath];
+    } else if (args.count >= 3) {
         NSString *leftPath = args[1];
         NSString *rightPath = args[2];
         [self.diffViewController compareLeftFile:leftPath rightFile:rightPath];
@@ -74,6 +79,9 @@
     [fileMenu addItemWithTitle:@"Open Files…"
                         action:@selector(openFiles:)
                  keyEquivalent:@"o"];
+    [fileMenu addItemWithTitle:@"Open 3-Way Merge…"
+                        action:@selector(openThreeWayMerge:)
+                 keyEquivalent:@"O"];
     [fileMenu addItem:[NSMenuItem separatorItem]];
     [fileMenu addItemWithTitle:@"Save Left File"
                         action:@selector(saveLeftFile:)
@@ -169,16 +177,34 @@
 - (void)openFiles:(id)sender {
     NSOpenPanel *panel = [NSOpenPanel openPanel];
     panel.canChooseFiles = YES;
-    panel.canChooseDirectories = NO;
+    panel.canChooseDirectories = YES;
     panel.allowsMultipleSelection = YES;
-    panel.message = @"Select two files to compare";
-    panel.allowedContentTypes = @[UTTypeText, UTTypePlainText, UTTypeSourceCode];
+    panel.message = @"Select two files or two folders to compare";
+    panel.allowedContentTypes = nil;
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse result) {
         if (result == NSModalResponseOK && panel.URLs.count >= 2) {
             NSString *leftPath = panel.URLs[0].path;
             NSString *rightPath = panel.URLs[1].path;
             [self.diffViewController compareLeftFile:leftPath rightFile:rightPath];
+        }
+    }];
+}
+
+- (void)openThreeWayMerge:(id)sender {
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    panel.canChooseFiles = YES;
+    panel.canChooseDirectories = NO;
+    panel.allowsMultipleSelection = YES;
+    panel.message = @"Select base, left, and right files for 3-way merge";
+    panel.allowedContentTypes = @[UTTypeText, UTTypePlainText, UTTypeSourceCode];
+
+    [panel beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse result) {
+        if (result == NSModalResponseOK && panel.URLs.count >= 3) {
+            NSString *basePath = panel.URLs[0].path;
+            NSString *leftPath = panel.URLs[1].path;
+            NSString *rightPath = panel.URLs[2].path;
+            [self.diffViewController mergeBaseFile:basePath leftFile:leftPath rightFile:rightPath];
         }
     }];
 }

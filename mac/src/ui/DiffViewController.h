@@ -18,6 +18,7 @@
 
 // Compare two files and display the results
 - (void)compareLeftFile:(NSString *)leftPath rightFile:(NSString *)rightPath;
+- (void)mergeBaseFile:(NSString *)basePath leftFile:(NSString *)leftPath rightFile:(NSString *)rightPath;
 
 // Navigate between differences
 - (void)navigateToNextDiff;

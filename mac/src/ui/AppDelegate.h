@@ -14,6 +14,7 @@
 @property (strong, nonatomic) DiffViewController *diffViewController;
 
 - (void)openFiles:(id)sender;
+- (void)openThreeWayMerge:(id)sender;
 - (void)nextDiff:(id)sender;
 - (void)prevDiff:(id)sender;
 - (void)goToLine:(id)sender;

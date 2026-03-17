@@ -112,12 +112,14 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 - Navigation between differences (⌘↑ / ⌘↓)
 - **Go to Line** navigation (⌘L) for left/right/both panes
 - File open dialog for selecting files to compare
+- **Folder comparison** (mac-native implementation) with added/removed/modified item listing
 - Support for multiple diff algorithms (Myers, Patience, Histogram, Minimal)
 - Algorithm selection from the UI
 - Ignore options: whitespace, whitespace changes, blank lines, and case
 - **Find functionality** (⌘F) with find bar support
 - **Edit and save files** (⌘S for left, ⌘⇧S for right)
 - **Copy/merge operations**: Copy selected text between left and right panes (⌘[ and ⌘])
+- **3-way merge foundation**: Base/Left/Right input and merged result generation with conflict markers
 - Copy, Select All, and standard text editing operations
 
 ### Not Included (macOS limitations / intentionally removed)
@@ -126,8 +128,6 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 - Windows-specific registry/options storage (uses NSUserDefaults instead)
 
 ### Planned
-- Folder comparison
-- 3-way merge
 - Plugin system
 - Enhanced syntax highlighting for more programming languages
 - Patch generation and application

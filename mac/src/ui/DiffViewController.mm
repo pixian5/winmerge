@@ -9,11 +9,13 @@
 #import "LineNumberRulerView.h"
 #include "DiffEngine.h"
 #include "FileOperations.h"
+#include "FolderCompareEngine.h"
+#include "ThreeWayMergeEngine.h"
 #include <memory>
 
 static NSString * const kWMDiffErrorDomain = @"org.winmerge.mac";
 static const NSInteger kWMDiffErrorMissingFile = 1;
-static const NSInteger kWMDiffErrorFolderUnsupported = 2;
+static const NSInteger kWMDiffErrorPathTypeMismatch = 2;
 
 @interface DiffViewController ()
 @property (assign, nonatomic) int currentDiffIndex;
@@ -25,6 +27,7 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
 @property (strong, nonatomic) NSPopUpButton *algorithmPopup;
 @property (copy, nonatomic) NSString *currentLeftPath;
 @property (copy, nonatomic) NSString *currentRightPath;
+@property (copy, nonatomic) NSString *currentBasePath;
 @end
 
 @implementation DiffViewController {
@@ -194,17 +197,70 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     self.leftLabel.stringValue = leftPath;
     self.rightLabel.stringValue = rightPath;
 
+    self.currentBasePath = nil;
     self.currentLeftPath = leftPath;
     self.currentRightPath = rightPath;
 
-    if (![self validatePathsAreFiles:leftPath right:rightPath]) {
+    if (![self validateSelectionPaths:leftPath right:rightPath]) {
+        return;
+    }
+
+    if (wm::FileOps::isDirectory(leftPath.UTF8String) && wm::FileOps::isDirectory(rightPath.UTF8String)) {
+        [self runFolderCompareForCurrentPaths];
         return;
     }
 
     [self runDiffForCurrentPaths];
 }
 
-- (BOOL)validatePathsAreFiles:(NSString *)leftPath right:(NSString *)rightPath {
+- (void)mergeBaseFile:(NSString *)basePath leftFile:(NSString *)leftPath rightFile:(NSString *)rightPath {
+    auto baseExists = wm::FileOps::fileExists(basePath.UTF8String);
+    auto leftExists = wm::FileOps::fileExists(leftPath.UTF8String);
+    auto rightExists = wm::FileOps::fileExists(rightPath.UTF8String);
+    if (!baseExists || !leftExists || !rightExists) {
+        NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
+                                             code:kWMDiffErrorMissingFile
+                                         userInfo:@{ NSLocalizedDescriptionKey :
+                                                     @"Base/left/right file paths must all exist." }];
+        [self displayComparisonError:error];
+        return;
+    }
+    if (wm::FileOps::isDirectory(basePath.UTF8String) ||
+        wm::FileOps::isDirectory(leftPath.UTF8String) ||
+        wm::FileOps::isDirectory(rightPath.UTF8String)) {
+        NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
+                                             code:kWMDiffErrorPathTypeMismatch
+                                         userInfo:@{ NSLocalizedDescriptionKey :
+                                                     @"3-way merge currently supports files only." }];
+        [self displayComparisonError:error];
+        return;
+    }
+
+    self.currentBasePath = basePath;
+    self.currentLeftPath = leftPath;
+    self.currentRightPath = rightPath;
+    self.leftLabel.stringValue = [NSString stringWithFormat:@"LEFT: %@", leftPath];
+    self.rightLabel.stringValue = [NSString stringWithFormat:@"MERGED: %@", [rightPath lastPathComponent]];
+
+    wm::ThreeWayMergeEngine mergeEngine;
+    wm::ThreeWayMergeResult mergeResult = mergeEngine.mergeFiles(basePath.UTF8String, leftPath.UTF8String, rightPath.UTF8String);
+
+    NSString *leftContent = [NSString stringWithUTF8String:wm::FileOps::readFile(leftPath.UTF8String).c_str()];
+    NSString *mergedContent = [NSString stringWithUTF8String:mergeResult.mergedText.c_str()];
+    if (!leftContent) leftContent = @"";
+    if (!mergedContent) mergedContent = @"";
+
+    NSDictionary *attrs = @{NSFontAttributeName: [NSFont monospacedSystemFontOfSize:12 weight:NSFontWeightRegular]};
+    [self.leftTextView.textStorage setAttributedString:[[NSAttributedString alloc] initWithString:leftContent attributes:attrs]];
+    [self.rightTextView.textStorage setAttributedString:[[NSAttributedString alloc] initWithString:mergedContent attributes:attrs]];
+
+    self.totalDiffs = mergeResult.conflictCount;
+    self.currentDiffIndex = -1;
+    self.statusLabel.stringValue = [NSString stringWithFormat:@"3-way merge: %d conflict(s) | base: %@",
+                                    mergeResult.conflictCount, [basePath lastPathComponent]];
+}
+
+- (BOOL)validateSelectionPaths:(NSString *)leftPath right:(NSString *)rightPath {
     auto leftExists = wm::FileOps::fileExists(leftPath.UTF8String);
     auto rightExists = wm::FileOps::fileExists(rightPath.UTF8String);
 
@@ -217,17 +273,70 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
         return NO;
     }
 
-    if (wm::FileOps::isDirectory(leftPath.UTF8String) ||
-        wm::FileOps::isDirectory(rightPath.UTF8String)) {
+    bool leftIsDir = wm::FileOps::isDirectory(leftPath.UTF8String);
+    bool rightIsDir = wm::FileOps::isDirectory(rightPath.UTF8String);
+    if (leftIsDir != rightIsDir) {
         NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
-                                             code:kWMDiffErrorFolderUnsupported
+                                             code:kWMDiffErrorPathTypeMismatch
                                          userInfo:@{ NSLocalizedDescriptionKey :
-                                                     @"Folder comparison is not yet available on macOS. Please select two files." }];
+                                                     @"Please select either two files or two folders." }];
         [self displayComparisonError:error];
         return NO;
     }
 
     return YES;
+}
+
+- (void)runFolderCompareForCurrentPaths {
+    wm::FolderCompareEngine engine;
+    wm::FolderCompareResult result = engine.compareFolders(self.currentLeftPath.UTF8String, self.currentRightPath.UTF8String);
+
+    NSMutableAttributedString *leftAttr = [[NSMutableAttributedString alloc] init];
+    NSMutableAttributedString *rightAttr = [[NSMutableAttributedString alloc] init];
+    NSDictionary *defaultAttrs = @{NSFontAttributeName: [NSFont monospacedSystemFontOfSize:12 weight:NSFontWeightRegular]};
+
+    for (const auto& item : result.items) {
+        NSString *relative = [NSString stringWithUTF8String:item.relativePath.c_str()];
+        NSString *label = item.isDirectory
+            ? [NSString stringWithFormat:@"[DIR] %@\n", relative ?: @""]
+            : [NSString stringWithFormat:@"[FILE] %@\n", relative ?: @""];
+
+        NSColor *bgColor = nil;
+        switch (item.op) {
+            case wm::DiffOp::Added:
+                bgColor = [NSColor colorWithSRGBRed:0.85 green:1.0 blue:0.85 alpha:1.0];
+                break;
+            case wm::DiffOp::Removed:
+                bgColor = [NSColor colorWithSRGBRed:1.0 green:0.85 blue:0.85 alpha:1.0];
+                break;
+            case wm::DiffOp::Modified:
+                bgColor = [NSColor colorWithSRGBRed:1.0 green:1.0 blue:0.8 alpha:1.0];
+                break;
+            default:
+                break;
+        }
+
+        NSMutableDictionary *attrs = [defaultAttrs mutableCopy];
+        if (bgColor) attrs[NSBackgroundColorAttributeName] = bgColor;
+
+        if (item.op == wm::DiffOp::Added) {
+            [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attrs]];
+            [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
+        } else if (item.op == wm::DiffOp::Removed) {
+            [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
+            [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:attrs]];
+        } else {
+            [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
+            [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
+        }
+    }
+
+    [self.leftTextView.textStorage setAttributedString:leftAttr];
+    [self.rightTextView.textStorage setAttributedString:rightAttr];
+    self.totalDiffs = result.totalDiffs();
+    self.currentDiffIndex = -1;
+    self.statusLabel.stringValue = [NSString stringWithFormat:@"Folder compare: %d difference(s) | +%d -%d ~%d",
+                                    result.totalDiffs(), result.addedCount, result.removedCount, result.modifiedCount];
 }
 
 - (void)runDiffForCurrentPaths {

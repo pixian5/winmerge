@@ -54,6 +54,8 @@ target_include_directories(xdiff PUBLIC ${XDIFF_DIR})
 add_library(diffcore STATIC
     src/core/DiffEngine.cpp
     src/core/FileOperations.cpp
+    src/core/FolderCompareEngine.cpp
+    src/core/ThreeWayMergeEngine.cpp
 )
 target_include_directories(diffcore PUBLIC src/core)
 target_link_libraries(diffcore PUBLIC xdiff)
