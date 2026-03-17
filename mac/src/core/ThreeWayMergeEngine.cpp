@@ -81,7 +81,7 @@ ThreeWayMergeResult ThreeWayMergeEngine::mergeFiles(const std::string& basePath,
         out << "=======\n";
         out << right << '\n';
         out << ">>>>>>> RIGHT\n";
-        mergedLineIndex += 6;
+        mergedLineIndex += 7;
         result.conflicts.push_back({start, mergedLineIndex});
         result.conflictCount++;
     }

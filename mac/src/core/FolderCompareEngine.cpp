@@ -68,13 +68,23 @@ FolderCompareResult FolderCompareEngine::compareFolders(const std::string& leftR
         } else if (leftIt->second.isDirectory) {
             item.op = DiffOp::Equal;
         } else {
-            std::string leftData = FileOps::readFile(leftIt->second.fullPath);
-            std::string rightData = FileOps::readFile(rightIt->second.fullPath);
-            if (leftData == rightData) {
-                item.op = DiffOp::Equal;
-            } else {
+            namespace fs = std::filesystem;
+            std::error_code leftEc;
+            std::error_code rightEc;
+            auto leftSize = fs::file_size(leftIt->second.fullPath, leftEc);
+            auto rightSize = fs::file_size(rightIt->second.fullPath, rightEc);
+            if (!leftEc && !rightEc && leftSize != rightSize) {
                 item.op = DiffOp::Modified;
                 result.modifiedCount++;
+            } else {
+                std::string leftData = FileOps::readFile(leftIt->second.fullPath);
+                std::string rightData = FileOps::readFile(rightIt->second.fullPath);
+                if (leftData == rightData) {
+                    item.op = DiffOp::Equal;
+                } else {
+                    item.op = DiffOp::Modified;
+                    result.modifiedCount++;
+                }
             }
         }
         result.items.push_back(std::move(item));
