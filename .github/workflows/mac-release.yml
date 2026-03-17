@@ -28,7 +28,7 @@ jobs:
           # Ensure each code change can publish even if two runs start in the same minute.
           # Keep required version format YYMMDDHHMI by moving forward minute-by-minute until unused.
           while git rev-parse "v${version}" >/dev/null 2>&1; do
-            version="$(date -u -j -v+1M -f '%y%m%d%H%M' "${version}" '+%y%m%d%H%M')"
+            version="$(TZ=UTC date -j -v+1M -f '%y%m%d%H%M' "${version}" '+%y%m%d%H%M')"
           done
 
           echo "version=${version}" >> "${GITHUB_OUTPUT}"

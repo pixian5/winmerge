@@ -469,7 +469,7 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     accessory.spacing = 8;
     alert.accessoryView = accessory;
 
-    if (![self.view.window makeFirstResponder:lineField]) {
+    if ([self.view.window makeFirstResponder:lineField]) {
         [lineField selectText:nil];
     }
 
