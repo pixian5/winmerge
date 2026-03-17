@@ -11,6 +11,10 @@
 #include "FileOperations.h"
 #include <memory>
 
+static NSString * const kWMDiffErrorDomain = @"org.winmerge.mac";
+static const NSInteger kWMDiffErrorMissingFile = 1;
+static const NSInteger kWMDiffErrorFolderUnsupported = 2;
+
 @interface DiffViewController ()
 @property (assign, nonatomic) int currentDiffIndex;
 @property (assign, nonatomic) int totalDiffs;
@@ -205,13 +209,21 @@
     auto rightExists = wm::FileOps::fileExists(rightPath.UTF8String);
 
     if (!leftExists || !rightExists) {
-        [self presentError:[NSString stringWithFormat:@"One or both files do not exist:\n%@\n%@", leftPath, rightPath]];
+        NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
+                                             code:kWMDiffErrorMissingFile
+                                         userInfo:@{ NSLocalizedDescriptionKey :
+                                                     [NSString stringWithFormat:@"One or both files do not exist:\n%@\n%@", leftPath, rightPath]}];
+        [self displayComparisonError:error];
         return NO;
     }
 
     if (wm::FileOps::isDirectory(leftPath.UTF8String) ||
         wm::FileOps::isDirectory(rightPath.UTF8String)) {
-        [self presentError:@"Folder comparison is not yet available on macOS. Please select two files."];
+        NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
+                                             code:kWMDiffErrorFolderUnsupported
+                                         userInfo:@{ NSLocalizedDescriptionKey :
+                                                     @"Folder comparison is not yet available on macOS. Please select two files." }];
+        [self displayComparisonError:error];
         return NO;
     }
 
@@ -418,14 +430,33 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+#if !__has_feature(objc_arc)
+    [super dealloc];
+#endif
 }
 
-- (void)presentError:(NSString *)message {
-    NSAlert *alert = [[NSAlert alloc] init];
-    alert.messageText = @"Cannot compare selection";
-    alert.informativeText = message ?: @"Unknown error";
-    [alert addButtonWithTitle:@"OK"];
-    [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
+- (BOOL)presentComparisonError:(NSError *)error {
+    if (!error) return NO;
+
+    NSWindow *window = self.view.window;
+    if (window) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = @"Cannot compare selection";
+        alert.informativeText = error.localizedDescription ?: @"Unknown error";
+        [alert addButtonWithTitle:@"OK"];
+        [alert beginSheetModalForWindow:window completionHandler:nil];
+        return YES;
+    }
+
+    return [NSApp presentError:error];
+}
+
+- (void)displayComparisonError:(NSError *)error {
+    if (!error) return;
+    if (![self presentComparisonError:error]) {
+        self.statusLabel.stringValue = error.localizedDescription ?: @"Unknown error";
+        NSLog(@"Failed to present comparison error: %@", error.localizedDescription ?: error);
+    }
 }
 
 #pragma mark - File Operations
