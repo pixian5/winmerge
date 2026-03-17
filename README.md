@@ -1,6 +1,6 @@
 # WinMerge
 
-- **macMerge**
+- **MacMerge**
   
 [![logo](Docs/Logos/WinMerge_logo_24bit.png)](https://github.com/WinMerge/winmerge)
 
