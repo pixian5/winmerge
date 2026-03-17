@@ -435,7 +435,7 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
 #endif
 }
 
-- (BOOL)presentError:(NSError *)error {
+- (BOOL)presentComparisonError:(NSError *)error {
     if (!error) return NO;
 
     NSWindow *window = self.view.window;
@@ -453,8 +453,9 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
 
 - (void)displayComparisonError:(NSError *)error {
     if (!error) return;
-    if (![self presentError:error]) {
+    if (![self presentComparisonError:error]) {
         self.statusLabel.stringValue = error.localizedDescription ?: @"Unknown error";
+        NSLog(@"Failed to present comparison error: %@", error.localizedDescription ?: error);
     }
 }
 
