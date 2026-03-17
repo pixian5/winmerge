@@ -85,20 +85,24 @@ ThreeWayMergeResult ThreeWayMergeEngine::mergeFiles(const std::string& basePath,
     const auto rightLines = splitLines(FileOps::readFile(rightPath));
 
     const size_t maxLines = std::max({baseLines.size(), leftLines.size(), rightLines.size()});
-    auto lineAt = [](const std::vector<std::string>& lines, size_t index, bool& exists) -> std::string {
+    auto tryGetLineAt = [](const std::vector<std::string>& lines, size_t index, bool& exists) -> const std::string* {
         if (index < lines.size()) {
             exists = true;
-            return lines[index];
+            return &lines[index];
         }
         exists = false;
-        return {};
+        return nullptr;
     };
 
     for (size_t i = 0; i < maxLines; ++i) {
         bool hasBase = false, hasLeft = false, hasRight = false;
-        std::string base = lineAt(baseLines, i, hasBase);
-        std::string left = lineAt(leftLines, i, hasLeft);
-        std::string right = lineAt(rightLines, i, hasRight);
+        const std::string* basePtr = tryGetLineAt(baseLines, i, hasBase);
+        const std::string* leftPtr = tryGetLineAt(leftLines, i, hasLeft);
+        const std::string* rightPtr = tryGetLineAt(rightLines, i, hasRight);
+        static const std::string kEmptyLine;
+        const std::string& base = hasBase ? *basePtr : kEmptyLine;
+        const std::string& left = hasLeft ? *leftPtr : kEmptyLine;
+        const std::string& right = hasRight ? *rightPtr : kEmptyLine;
 
         if (!hasBase && !hasLeft && !hasRight) {
             continue;
@@ -119,9 +123,9 @@ ThreeWayMergeResult ThreeWayMergeEngine::mergeFiles(const std::string& basePath,
 
         int conflictIndex = static_cast<int>(result.conflicts.size());
         MergeConflictRange conflict;
-        conflict.baseLine = std::move(base);
-        conflict.leftLine = std::move(left);
-        conflict.rightLine = std::move(right);
+        conflict.baseLine = base;
+        conflict.leftLine = left;
+        conflict.rightLine = right;
         conflict.resolution = MergeResolution::Unresolved;
         result.conflicts.push_back(std::move(conflict));
         result.segments.push_back({true, {}, conflictIndex});
