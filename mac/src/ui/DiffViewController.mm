@@ -265,7 +265,7 @@ typedef NS_ENUM(NSInteger, WMDisplayMode) {
     _diffResult.reset();
     _folderResult.reset();
     self.leftLabel.stringValue = [NSString stringWithFormat:@"LEFT: %@", leftPath];
-    self.rightLabel.stringValue = [NSString stringWithFormat:@"MERGED: %@", [rightPath lastPathComponent]];
+    self.rightLabel.stringValue = [NSString stringWithFormat:@"MERGE RESULT: %@", [rightPath lastPathComponent]];
 
     wm::ThreeWayMergeEngine mergeEngine;
     _threeWayResult = std::make_unique<wm::ThreeWayMergeResult>(
@@ -837,7 +837,7 @@ typedef NS_ENUM(NSInteger, WMDisplayMode) {
     NSString *text = textView.string ?: @"";
     NSUInteger loc = textView.selectedRange.location;
     if (loc > text.length) loc = text.length;
-    NSUInteger line = 0;
+    NSUInteger line = 1;
     NSUInteger idx = 0;
     while (idx < loc && idx < text.length) {
         NSRange lineRange = [text lineRangeForRange:NSMakeRange(idx, 0)];
@@ -897,12 +897,13 @@ typedef NS_ENUM(NSInteger, WMDisplayMode) {
 
     NSTextView *sourceView = self.rightTextView.selectedRange.length > 0 ? self.rightTextView : self.leftTextView;
     NSInteger lineIndex = [self selectedLineIndexForTextView:sourceView];
-    if (lineIndex < 0 || static_cast<size_t>(lineIndex) >= _folderDisplayedItemIndexes.size()) {
+    NSInteger zeroBasedIndex = lineIndex - 1;
+    if (zeroBasedIndex < 0 || static_cast<size_t>(zeroBasedIndex) >= _folderDisplayedItemIndexes.size()) {
         [self showAlert:@"Select a folder compare row first"];
         return;
     }
 
-    int itemIndex = _folderDisplayedItemIndexes[static_cast<size_t>(lineIndex)];
+    int itemIndex = _folderDisplayedItemIndexes[static_cast<size_t>(zeroBasedIndex)];
     if (itemIndex < 0 || static_cast<size_t>(itemIndex) >= _folderResult->items.size()) {
         [self showAlert:@"Invalid folder compare selection"];
         return;

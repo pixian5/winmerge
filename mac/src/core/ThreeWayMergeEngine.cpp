@@ -85,7 +85,7 @@ ThreeWayMergeResult ThreeWayMergeEngine::mergeFiles(const std::string& basePath,
     const auto rightLines = splitLines(FileOps::readFile(rightPath));
 
     const size_t maxLines = std::max({baseLines.size(), leftLines.size(), rightLines.size()});
-    auto tryGetLineAt = [](const std::vector<std::string>& lines, size_t index, bool& exists) -> const std::string* {
+    auto getLineIfExists = [](const std::vector<std::string>& lines, size_t index, bool& exists) -> const std::string* {
         if (index < lines.size()) {
             exists = true;
             return &lines[index];
@@ -96,9 +96,9 @@ ThreeWayMergeResult ThreeWayMergeEngine::mergeFiles(const std::string& basePath,
 
     for (size_t i = 0; i < maxLines; ++i) {
         bool hasBase = false, hasLeft = false, hasRight = false;
-        const std::string* basePtr = tryGetLineAt(baseLines, i, hasBase);
-        const std::string* leftPtr = tryGetLineAt(leftLines, i, hasLeft);
-        const std::string* rightPtr = tryGetLineAt(rightLines, i, hasRight);
+        const std::string* basePtr = getLineIfExists(baseLines, i, hasBase);
+        const std::string* leftPtr = getLineIfExists(leftLines, i, hasLeft);
+        const std::string* rightPtr = getLineIfExists(rightLines, i, hasRight);
         static const std::string kEmptyLine;
         const std::string& base = hasBase ? *basePtr : kEmptyLine;
         const std::string& left = hasLeft ? *leftPtr : kEmptyLine;
