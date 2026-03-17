@@ -1,4 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
+
+# This macOS port requires Apple's toolchain (Objective-C++).
+if(NOT APPLE)
+    message(FATAL_ERROR "The mac/ port builds only on macOS with Apple toolchain (Objective-C++). Use the Windows build elsewhere.")
+endif()
+
 project(WinMerge VERSION 0.1.0 LANGUAGES C CXX OBJCXX)
 
 set(CMAKE_CXX_STANDARD 17)

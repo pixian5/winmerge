@@ -41,6 +41,7 @@ mac/
 - **macOS** 12.0 (Monterey) or later
 - **Xcode** 14.0 or later (with Command Line Tools)
 - **CMake** 3.20 or later
+- Note: Configuration/build is supported only on macOS. On Linux/Windows hosts the CMake configure step will fail due to the missing Apple Objective-C++ toolchain.
 
 Install CMake via Homebrew if needed:
 
