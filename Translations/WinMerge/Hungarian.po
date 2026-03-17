@@ -1156,6 +1156,10 @@ msgid "&All"
 msgstr "Mind"
 
 #, c-format
+msgid "&Selection"
+msgstr "&Kijelölés"
+
+#, c-format
 msgid "Re&name"
 msgstr "Át&nevezés"
 
@@ -1375,7 +1379,7 @@ msgid "Size"
 msgstr "Méret"
 
 msgid "Existence"
-msgstr ""
+msgstr "Létezés"
 
 #, c-format
 msgid "&Load Project..."
@@ -1775,16 +1779,16 @@ msgid "Not Equal"
 msgstr "Nem egyenlő"
 
 msgid "Less Than"
-msgstr ""
+msgstr "Kevesebb, mint"
 
 msgid "Less Than or Equal to"
-msgstr ""
+msgstr "Kisebb vagy egyenlő, mint"
 
 msgid "Greater Than"
-msgstr ""
+msgstr "Nagyobb, mint"
 
 msgid "Greater Than or Equal to"
-msgstr ""
+msgstr "Nagyobb vagy egyenlő, mint"
 
 msgid "Less than 10B"
 msgstr "Kevesebb, mint 10 B"
@@ -1867,6 +1871,9 @@ msgstr "&Alapnév (kiterjesztés nélkül)"
 msgid "Normalized &Unicode Name"
 msgstr "Normalizált &Unicode név"
 
+msgid "&Relative Path"
+msgstr "&Relatív elérési út"
+
 msgid "&Date"
 msgstr "&Dátum"
 
@@ -1878,6 +1885,31 @@ msgstr "&csere() függvény beszúrása"
 
 msgid "Insert rege&xReplace() Function"
 msgstr "rege&xCsere() függvény beszúrása"
+
+msgid "Replace &Lists"
+msgstr "&Listák cseréje"
+
+msgid "&Create String Replace List and Insert..."
+msgstr "&Karakterlánc-cserelista létrehozása és beszúrása..."
+
+msgid "Create &Regex Replace List and Insert..."
+msgstr "&Regex cserelista létrehozása és beszúrása..."
+
+msgid "&String Replace Lists"
+msgstr "&Karakterlánc-cserelisták"
+
+msgid "Re&gex Replace Lists"
+msgstr "Re&gex kifejezések cserelistái"
+
+msgid "Open String Replace Lists Folder..."
+msgstr "Karakterlánc-cserelisták mappájának megnyitása..."
+
+msgid "Open Regex Replace Lists Folder..."
+msgstr "Regex cserelisták mappájának megnyitása..."
+
+#, c-format
+msgid "Match &case"
+msgstr "Kis-nagybetű &érzékenység"
 
 msgid "Text &Normalization"
 msgstr "Szöveg &normalizálás"
@@ -1911,6 +1943,9 @@ msgstr "&Hiragana"
 
 msgid "&Katakana"
 msgstr "&Katakana"
+
+msgid "Normalize &Unicode"
+msgstr "&Unicode normalizálása"
 
 #, c-format
 msgid "About WinMerge"
@@ -2025,10 +2060,6 @@ msgid "Match &whole word only"
 msgstr "Pontos egyezés"
 
 #, c-format
-msgid "Match &case"
-msgstr "Kis-nagybetű &érzékenység"
-
-#, c-format
 msgid "Regular &expression"
 msgstr "&Reguláris kifejezések"
 
@@ -2063,10 +2094,6 @@ msgstr "&Álljon meg a fájl végénél"
 #, c-format
 msgid "Replace in"
 msgstr "Csere itt"
-
-#, c-format
-msgid "&Selection"
-msgstr "&Kijelölés"
 
 #, c-format
 msgid "Wh&ole file"
@@ -3165,8 +3192,8 @@ msgstr "&Átnevezés/áthelyezés észlelése:"
 msgid "Rename/move detection &keys:"
 msgstr "Átnevezési/áthelyezési érzékelési &kulcsok:"
 
-msgid "&Merge renamed items into a single item"
-msgstr "Átnevezett elemek &egyesítése egyetlen elemmé"
+msgid "M&erge renames and moves:"
+msgstr "Átnevezések és áthelyezések &egyesítése:"
 
 msgid "File patterns:"
 msgstr "Fájlfajták:"
@@ -3326,7 +3353,7 @@ msgid ""
 "New Documents (Ctrl+N)"
 msgstr ""
 "\n"
-"Új dokumentum (Ctrl+N)"
+"Új dokumentumok (Ctrl+N)"
 
 #, c-format
 msgid ""
@@ -3519,10 +3546,6 @@ msgid "Version %1"
 msgstr "%1 verzió"
 
 #, c-format
-msgid "X64"
-msgstr "X64"
-
-#, c-format
 msgid "Options (%1)"
 msgstr "Opciók (%1)"
 
@@ -3552,6 +3575,9 @@ msgstr "WinMerge Projekt fájlok (*.WinMerge)|*.WinMerge||"
 #, c-format
 msgid "Options files (*.ini)|*.ini|All Files (*.*)|*.*||"
 msgstr "Ini fájlok (*.ini)|*.ini|Minden fájl (*.*)|*.*||"
+
+msgid "Tab-Separated Values (*.tsv;*.txt)|*.tsv;*.txt|All Files (*.*)|*.*||"
+msgstr "Tabulátorral elválasztott értékek (*.tsv;*.txt)|*.tsv;*.txt|Összes fájl (*.*)|*.*||"
 
 #, c-format
 msgid "Text Files (*.csv;*.asc;*.rpt;*.txt)|*.csv;*.asc;*.rpt;*.txt|All Files (*.*)|*.*||"
@@ -3672,7 +3698,7 @@ msgstr ""
 "Nem sikerült törölni a szűrőfájlt:\n"
 "%1\n"
 "\n"
-"Lehet, hogy a fájl írásvédett?"
+"Lehet, hogy a fájl írásvédett."
 
 #, c-format
 msgid "Locate Filter File to Install"
@@ -3882,10 +3908,7 @@ msgid "The file\n%1\nis not a conflict file."
 msgstr "A fájl\n%1\nnem egy konfliktus fájl."
 
 msgid "Comparing large files requires significant memory.\nShow only comparison results (not file contents)?"
-msgstr ""
-"Nagyon nagy fájlok összehasonlítására készülsz.\n"
-"A fájlok tartalmának megjelenítése nagyon sok memóriát igényel.\n"
-"Csak az összehasonlítás eredményét szeretnéd megjeleníteni, a fájlok tartalmát nem?\n"
+msgstr "Nagy fájlok összehasonlítása sok memóriát igényel.\nCsak az összehasonlítás eredményét szeretnéd megjeleníteni, (a fájlok tartalmát nem)?\n"
 "\n"
 
 #, c-format
@@ -3928,12 +3951,7 @@ msgstr ""
 
 #, c-format
 msgid "Plugin '%2' cannot pack changes to left file into '%1'.\n\nOriginal unchanged. Save unpacked version?"
-msgstr ""
-"A(z) %2 bővítmény nem tudja becsomagolni a bal fájlban végzett módosításokat itt: %1.\n"
-"\n"
-"Az eredeti fájl nem változik.\n"
-"\n"
-"Elmented a be nem csomagolt verziót egy másik fájlba?"
+msgstr "A(z) %2 bővítmény nem tudja becsomagolni a bal fájlban végzett módosításokat itt: %1.\n\nAz eredeti fájl nem változott. Elmented a be nem csomagolt verziót?"
 
 #, c-format
 msgid "Plugin '%2' cannot pack changes to middle file into '%1'.\n\nOriginal unchanged. Save unpacked version?"
@@ -4505,6 +4523,9 @@ msgstr " (Bal és jobb egyforma)"
 msgid " (Left and middle are identical)"
 msgstr " (Bal és középső egyforma)"
 
+msgid " (paths differ)"
+msgstr " (utak különbözősége)"
+
 #, c-format
 msgid "Text files are different"
 msgstr "A szövegfájlok különböznek"
@@ -4517,7 +4538,7 @@ msgstr "A képfájlok különböznek"
 
 #, c-format
 msgid "Files are different (expr: %1)"
-msgstr ""
+msgstr "A fájlok eltérőek (kifejezés: %1)"
 
 #, c-format
 msgid "Group%d"
@@ -4532,6 +4553,12 @@ msgstr "Átnevezések észlelése"
 
 msgid "Detect renames and moves"
 msgstr "Átnevezések és áthelyezések észlelése"
+
+msgid "Merge renames"
+msgstr "Átnevezések egyesítése"
+
+msgid "Merge renames and moves"
+msgstr "Átnevezések és áthelyezések egyesítése"
 
 msgid "Renamed"
 msgstr "Átnevezve"
@@ -4549,6 +4576,9 @@ msgstr "(%1 elem)"
 #, c-format
 msgid "%1 (set %2): "
 msgstr "%1 (készlet %2)"
+
+msgid "Some moved items have been merged.\nIn Tree Mode, these items may appear in positions that do not reflect the actual folder structure, which can be confusing.\nSwitch to Flat Mode?"
+msgstr "Néhány áthelyezett elem egyesítésre került.\nFa nézetben ezek az elemek olyan pozíciókban jelenhetnek meg, amelyek nem tükrözik a tényleges mappastruktúrát, ami zavaró lehet.\nVáltás sík nézetre?"
 
 #, c-format
 msgid "Elapsed time: %ld ms"
@@ -5567,7 +5597,7 @@ msgstr "Szűrő alkalmazva"
 
 #, c-format
 msgid "Compare %1"
-msgstr ""
+msgstr "Összehasonlítás %1"
 
 #, c-format
 msgid "Clipboard at %s"
@@ -5794,6 +5824,12 @@ msgstr "pl %1"
 msgid "WinMerge detected a previous crash. Please report this if possible."
 msgstr "A WinMerge egy korábbi összeomlást észlelt. Kérjük, jelentse ezt, ha lehetséges."
 
+msgid "# Regex replacement list\r\n# Format: regex<TAB>replacement\r\n# Backreferences like $1, $2 are supported\r\n\r\n(\\d{4})-(\\d{2})-(\\d{2})\t$1_$2_$3\r\n"
+msgstr "# Regex helyettesítési lista\r\n# Formátum: regex<TAB>csere\r\n# A $1 és $2-hez hasonló visszahivatkozások támogatottak\r\n\r\n(\\d{4})-(\\d{2})-(\\d{2})\t$1_$2_$3\r\n"
+
+msgid "# Replacement list\r\n# Format: search<TAB>replacement\r\n# Lines starting with # are ignored\r\n\r\nfrom1\tto1\r\nfrom2\tto2\r\n"
+msgstr "# Cserelista\r\n# Formátum: search<TAB>replacement\r\n# A # karakterrel kezdődő sorokat figyelmen kívül hagyja\r\n\r\n1-től 1-ig\r\n2-től 2-ig\r\n"
+
 msgid "Prettification"
 msgstr "Megjelenés optimalizálás"
 
@@ -5899,6 +5935,9 @@ msgstr "XML formázása"
 msgid "Prettify YAML"
 msgstr "YAML formázása"
 
+msgid "Prettify PO"
+msgstr "PO formázása"
+
 msgid "Preview Graphviz"
 msgstr "Graphviz előnézet"
 
@@ -5923,6 +5962,9 @@ msgstr "YAML adatok lekérdezése..."
 msgid "Validate HTML"
 msgstr "HTML érvényesítése"
 
+msgid "Validate PO"
+msgstr "PO érvényesítése"
+
 msgid "Disassemble JVM Bytecode"
 msgstr "JVM Bytekód kibontása"
 
@@ -5937,6 +5979,9 @@ msgstr "Text konvertálása MI-vel..."
 
 msgid "Unescape Java properties files"
 msgstr "Java tulajdonságfájlok feloldása"
+
+msgid "Decompile Java (CFR)"
+msgstr "Java dekompilálása (CFR)"
 
 msgid "Make characters uppercase"
 msgstr "Nagybetűsítés"
@@ -5993,6 +6038,9 @@ msgstr "XML formázás tidy-html5-tel. \r\nArgumentumok: A tidy parancsnak megfe
 msgid "YAML Prettier (yq).\r\nArguments: yq filter/command line options."
 msgstr "YAML formázás yq paranccsal. \r\nArgumentumok: Az yq parancsnak megfelelő szűrő vagy parancssori opciók."
 
+msgid "PO Prettier (gettext msgcat).\r\nArguments: msgcat command line options."
+msgstr "PO formázó (gettext msgcat).\r\nArgumentumok: msgcat parancssori opciók."
+
 msgid "Graphviz Previewer.\r\nArguments: dot command line options."
 msgstr "Graphviz előnézeti program. \r\nArgumentumok: A dot parancsnak megfelelő parancssori opciók."
 
@@ -6002,10 +6050,10 @@ msgstr "Jelölés előnézeti program. \r\nArgumentumok: Az md2html parancsnak m
 msgid "PlantUML Previewer.\r\nArguments: plantuml.jar command line options."
 msgstr "PlantUML előnézeti program. \r\nArgumentumok: A plantuml.jar parancsnak megfelelő parancssori opciók."
 
-msgid "CSV Querier (q).\r\nArguments: SQL statement/q comannd line options."
+msgid "CSV Querier (q).\r\nArguments: SQL statement/q command line options."
 msgstr "CSV Lekérdező q paranccsal.  \r\nArgumentumok: A q parancsnak megfelelő SQL utasítás vagy parancssori opciók."
 
-msgid "TSV Querier (q).\r\nArguments: SQL statement/q comannd line options."
+msgid "TSV Querier (q).\r\nArguments: SQL statement/q command line options."
 msgstr "TSV Lekérdező q paranccsal.  \r\nArgumentumok: A q parancsnak megfelelő SQL utasítás vagy parancssori opciók."
 
 msgid "JSON Querier (jq).\r\nArguments: jq filter/command line options."
@@ -6016,6 +6064,9 @@ msgstr "YAML Lekérdező yq paranccsal. \r\nArgumentumok: Az yq parancsnak megfe
 
 msgid "HTML Validator (tidy-html5).\r\nArguments: tidy command line options."
 msgstr "HTML Validátor tidy-html5-tel. \r\nArgumentumok: A tidy parancsnak megfelelő parancssori opciók."
+
+msgid "PO Validator (gettext msgfmt).\r\nArguments: msgfmt command line options."
+msgstr "PO Validator (gettext msgfmt).\r\nArgumentumok: msgfmt parancssori opciók."
 
 msgid "JVM bytecode disassembler (javap).\r\nArguments: javap command line options."
 msgstr "JVM bytecode disassembler javap-vel. \r\nArgumentumok: A javap parancsnak megfelelő parancssori opciók."
@@ -6080,6 +6131,9 @@ msgstr "Szövegkonvertáló OpenAI API-val.\r\nUsage: AIConvertText PROMPT"
 msgid "Unescape and display escaped Java properties files."
 msgstr "Az escape-elt Java tulajdonságfájlok feloldása és megjelenítése."
 
+msgid "Java decompiler (CFR).\r\nDecompiles .class files into readable Java source code.\r\nArguments: CFR command line options."
+msgstr "Java dekompilátor (CFR).\r\nA .class fájlokat olvasható Java forráskóddá dekompilálja.\r\nArgumentumok: CFR parancssori opciók."
+
 msgid "CompareMSExcelFiles.sct WinMerge Plugin Options"
 msgstr "CompareMSExcelFiles.sct WinMerge beépülő opciói"
 
@@ -6121,6 +6175,9 @@ msgstr "Nem lehet makrókat elérni.\r\n    Ahhoz, hogy a WinMerge összehasonl�
 
 msgid "Replace line breaks in formulas with spaces"
 msgstr "Sortörések cseréje szóközökre a képletekben"
+
+msgid "Include sheet order number in filename"
+msgstr "A fájlnévben szerepeljen a lap sorszáma"
 
 msgid "Compare VBA macros"
 msgstr "VBA makrók összehasonlítása"

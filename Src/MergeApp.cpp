@@ -4,6 +4,7 @@
 #include "VersionInfo.h"
 #include "Constants.h"
 #include "Logger.h"
+#include "../Version.h"
 
 // Get user language description of error, if available
 String GetSysError(int nerr /* =-1 */)
@@ -127,28 +128,17 @@ AboutInfo::AboutInfo()
 	version = strutils::format_string1(_("Version %1"), verinfo.GetProductVersion());
 	private_build = verinfo.GetPrivateBuild();
 	if (!private_build.empty())
-	{
-		version += _T(" + ") + private_build;
-	}
-
-	if (version.find(_T(" - ")) != String::npos)
-	{
-		strutils::replace(version, _T(" - "), _T("\r\n"));
-		version += _T(" ");
-	}
-	else
-	{
-		version += _T("\r\n");
-	}
+		version += _T("+") + private_build;
+	version += _T(" (");
+	version += _(STRYEARMONTH);
+	version += _T(")\r\n");
 
 #if defined _M_IX86
-	version += _T(" ");
-	version += _T("x86");
+	version += _T(" x86");
 #elif defined _M_IA64
 	version += _T(" IA64");
 #elif defined _M_X64
-	version += _T(" ");
-	version += _("X64");
+	version += _T(" X64");
 #elif defined _M_ARM
 	version += _T(" ARM");
 #elif defined _M_ARM64

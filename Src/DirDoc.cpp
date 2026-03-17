@@ -376,9 +376,14 @@ void CDirDoc::Rescan()
 		m_pCtxt->m_pRenameMoveDetection.reset();
 		m_pCtxt->RemoveAll();
 		m_pCtxt->InitDiffItemList();
+		InitDiffContext(m_pCtxt.get());
 	}
-
-	InitDiffContext(m_pCtxt.get());
+	else
+	{
+		auto pRenameMoveDetection = std::move(m_pCtxt->m_pRenameMoveDetection);
+		InitDiffContext(m_pCtxt.get());
+		m_pCtxt->m_pRenameMoveDetection = std::move(pRenameMoveDetection);
+	}
 
 	auto* pHeaderBar = pf->GetHeaderInterface();
 	pHeaderBar->SetPaneCount(m_nDirs);
@@ -468,8 +473,9 @@ void CDirDoc::Rescan()
 			{
 				bool doMoveDetection = GetOptionsMgr()->GetInt(OPT_CMP_RENAME_MOVE_DETECTION) > 1;
 				pRenameMoveDetection->Detect(*myStruct->context, doMoveDetection);
-				if (GetOptionsMgr()->GetBool(OPT_CMP_MERGE_RENAMED_ITEMS))
-					pRenameMoveDetection->Merge(*myStruct->context);
+				int nRenameMoveMergeMode = GetOptionsMgr()->GetInt(OPT_CMP_RENAME_MOVE_MERGE_MODE);
+				if (nRenameMoveMergeMode > 0)
+					pRenameMoveDetection->Merge(*myStruct->context, nRenameMoveMergeMode > 1);
 			}
 			});
 		m_diffThread.SetCompareFunction([](DiffFuncStruct* myStruct) {
@@ -493,8 +499,9 @@ void CDirDoc::Rescan()
 			{
 				bool doMoveDetection = GetOptionsMgr()->GetInt(OPT_CMP_RENAME_MOVE_DETECTION) > 1;
 				myStruct->context->m_pRenameMoveDetection->Detect(*myStruct->context, doMoveDetection);
-				if (GetOptionsMgr()->GetBool(OPT_CMP_MERGE_RENAMED_ITEMS))
-					myStruct->context->m_pRenameMoveDetection->Merge(*myStruct->context);
+				int nRenameMoveMergeMode = GetOptionsMgr()->GetInt(OPT_CMP_RENAME_MOVE_MERGE_MODE);
+				if (nRenameMoveMergeMode > 0)
+					myStruct->context->m_pRenameMoveDetection->Merge(*myStruct->context, nRenameMoveMergeMode > 1);
 			}
 		});
 		m_diffThread.SetCompareFunction([](DiffFuncStruct* myStruct) {
@@ -1099,7 +1106,7 @@ bool CDirDoc::CompareFilesIfFilesAreLarge(int nFiles, const FileLocation ifilelo
 	GetOptionsMgr()->SaveOption(OPT_CMP_METHOD, oldCompareMethod); // Restore previous compare method
 	FolderCmp cmp(&ctxt);
 	CWaitCursor waitstatus;
-	di.diffcode.diffcode |= cmp.prepAndCompareFiles(di);
+	cmp.prepAndCompareFiles(di);
 	if (di.diffcode.isResultSame())
 	{
 		ctxt.GetComparePaths(di, paths);

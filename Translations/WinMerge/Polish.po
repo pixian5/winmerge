@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WinMerge\n"
 "Report-Msgid-Bugs-To: https://github.com/WinMerge/winmerge/issues/\n"
-"POT-Creation-Date: 2026-02-03 07:46+0000\n"
-"PO-Revision-Date: 2026-02-03 23:10+0000\n"
+"POT-Creation-Date: 2026-02-25 21:21+0000\n"
+"PO-Revision-Date: 2026-02-27 00:21+0000\n"
 "Last-Translator: Mirosław Żylewicz\n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -964,6 +964,9 @@ msgstr "O&ba"
 msgid "&All"
 msgstr "Wszystkie"
 
+msgid "&Selection"
+msgstr "Zaznaczeniu"
+
 msgid "Re&name"
 msgstr "Zmień &nazwę"
 
@@ -1638,6 +1641,9 @@ msgstr "Nazwa podstawowa (bez rozszerzenia)"
 msgid "Normalized &Unicode Name"
 msgstr "Znormalizowana nazwa Unicode"
 
+msgid "&Relative Path"
+msgstr "Ścieżka względna"
+
 msgid "&Date"
 msgstr "Data"
 
@@ -1649,6 +1655,30 @@ msgstr "Wstaw funkcję zastąp()"
 
 msgid "Insert rege&xReplace() Function"
 msgstr "Wstaw funkcję zastąpWyrażenieRegularne()"
+
+msgid "Replace &Lists"
+msgstr "Listy zastąp"
+
+msgid "&Create String Replace List and Insert..."
+msgstr "Utwórz listę zastąp ciągów znaków i wstaw..."
+
+msgid "Create &Regex Replace List and Insert..."
+msgstr "Utwórz listę zastąp wyrażenie regularne i wstaw..."
+
+msgid "&String Replace Lists"
+msgstr "Listy zastąp ciągów znaków"
+
+msgid "Re&gex Replace Lists"
+msgstr "Listy zastąp wyrażenie regularne"
+
+msgid "Open String Replace Lists Folder..."
+msgstr "Otwórz folder listy zastąp ciągu znaków..."
+
+msgid "Open Regex Replace Lists Folder..."
+msgstr "Otwórz folder listy zastąp wyrażenie regularne..."
+
+msgid "Match &case"
+msgstr "Uwzględnij wielkość liter"
 
 msgid "Text &Normalization"
 msgstr "Normalizacja tekstu"
@@ -1682,6 +1712,9 @@ msgstr "Hiragana"
 
 msgid "&Katakana"
 msgstr "Katakana"
+
+msgid "Normalize &Unicode"
+msgstr "Normalizuj Unicode"
 
 msgid "About WinMerge"
 msgstr "O programie WinMerge"
@@ -1770,9 +1803,6 @@ msgstr "Z&najdź:"
 msgid "Match &whole word only"
 msgstr "Dopasuj tylko całe sło&wa"
 
-msgid "Match &case"
-msgstr "Uwzględnij wielkość liter"
-
 msgid "Regular &expression"
 msgstr "Wyrażenie r&egularne"
 
@@ -1799,9 +1829,6 @@ msgstr "Szukaj tylko &do końca pliku"
 
 msgid "Replace in"
 msgstr "Zastąp w"
-
-msgid "&Selection"
-msgstr "Zaznaczeniu"
 
 msgid "Wh&ole file"
 msgstr "Całym pliku"
@@ -2692,8 +2719,8 @@ msgstr "Wykrywanie zmiany nazwy/przeniesienia:"
 msgid "Rename/move detection &keys:"
 msgstr "Klucze wykrywania zmiany nazwy/przeniesienia:"
 
-msgid "&Merge renamed items into a single item"
-msgstr "Scal zmienione nazwy elementów w jeden element"
+msgid "M&erge renames and moves:"
+msgstr "Scal zmiany nazw i przeniesienia:"
 
 msgid "File patterns:"
 msgstr "Szablony pliku:"
@@ -2955,9 +2982,6 @@ msgstr "Do środka:"
 msgid "Version %1"
 msgstr "Wersja %1"
 
-msgid "X64"
-msgstr "X64"
-
 #, c-format
 msgid "Options (%1)"
 msgstr "Opcje (%1)"
@@ -2983,6 +3007,9 @@ msgstr "Pliki projektu WinMerge (*.WinMerge)|*.WinMerge||"
 
 msgid "Options files (*.ini)|*.ini|All Files (*.*)|*.*||"
 msgstr "Pliki ustawień (*.ini)|*.ini|Wszystkie pliki (*.*)|*.*||"
+
+msgid "Tab-Separated Values (*.tsv;*.txt)|*.tsv;*.txt|All Files (*.*)|*.*||"
+msgstr "Wartości rozdzielane tabulatorami (*.tsv;*.txt)|*.tsv;*.txt|Wszystkie pliki (*.*)|*.*||"
 
 msgid "Text Files (*.csv;*.asc;*.rpt;*.txt)|*.csv;*.asc;*.rpt;*.txt|All Files (*.*)|*.*||"
 msgstr "Pliki tekstowe (*.csv;*.asc;*.rpt;*.txt)|*.csv;*.asc;*.rpt;*.txt|Wszystkie pliki (*.*)|*.*||"
@@ -3712,6 +3739,9 @@ msgstr " (Lewy i prawy są identyczne)"
 msgid " (Left and middle are identical)"
 msgstr " (Lewy i środkowy są identyczne)"
 
+msgid " (paths differ)"
+msgstr " (różne ścieżki)"
+
 msgid "Text files are different"
 msgstr "Pliki tekstowe są różne"
 
@@ -3739,6 +3769,12 @@ msgstr "Wykryj zmiany nazw"
 msgid "Detect renames and moves"
 msgstr "Wykryj zmiany nazw i przeniesienia"
 
+msgid "Merge renames"
+msgstr "Scal zmiany nazw"
+
+msgid "Merge renames and moves"
+msgstr "Scal zmiany nazw i przeniesienia"
+
 msgid "Renamed"
 msgstr "Zmieniono nazwę"
 
@@ -3754,6 +3790,9 @@ msgstr "(%1 elementy(ów))"
 
 #, c-format
 msgid "%1 (set %2): "
+msgstr ""
+
+msgid "Some moved items have been merged.\nIn Tree Mode, these items may appear in positions that do not reflect the actual folder structure, which can be confusing.\nSwitch to Flat Mode?"
 msgstr ""
 
 #, c-format
@@ -4791,6 +4830,12 @@ msgstr "np. %1"
 msgid "WinMerge detected a previous crash. Please report this if possible."
 msgstr "WinMerge wykrył błąd krytyczny podczas ostatniej sesji. Prosimy o zgłoszenie tego faktu, jeśli to możliwe."
 
+msgid "# Regex replacement list\r\n# Format: regex<TAB>replacement\r\n# Backreferences like $1, $2 are supported\r\n\r\n(\\d{4})-(\\d{2})-(\\d{2})\t$1_$2_$3\r\n"
+msgstr ""
+
+msgid "# Replacement list\r\n# Format: search<TAB>replacement\r\n# Lines starting with # are ignored\r\n\r\nfrom1\tto1\r\nfrom2\tto2\r\n"
+msgstr ""
+
 msgid "Prettification"
 msgstr "Upiększanie"
 
@@ -4896,6 +4941,9 @@ msgstr "Upiększ kod XML"
 msgid "Prettify YAML"
 msgstr "Upiększ kod YAML"
 
+msgid "Prettify PO"
+msgstr "Upiększ kod PO"
+
 msgid "Preview Graphviz"
 msgstr "Podgląd Graphviz"
 
@@ -4918,7 +4966,10 @@ msgid "Query YAML Data..."
 msgstr "Kwerenda danych YAML..."
 
 msgid "Validate HTML"
-msgstr "Walidacja HTML"
+msgstr "Walidacja kodu HTML"
+
+msgid "Validate PO"
+msgstr "Walidacja kodu PO"
 
 msgid "Disassemble JVM Bytecode"
 msgstr "Dezasembluj kod bajtowy JVM"
@@ -4933,6 +4984,9 @@ msgid "Convert Text with AI..."
 msgstr "Konwertuj tekst za pomocą AI..."
 
 msgid "Unescape Java properties files"
+msgstr ""
+
+msgid "Decompile Java (CFR)"
 msgstr ""
 
 msgid "Make characters uppercase"
@@ -4979,52 +5033,58 @@ msgid "Select lines.\r\nUsage: SelectLines RANGES\r\n or: SelectLines [-v] [-i] 
 msgstr "Wybierz niektóre wiersze. \r\nUżycie: SelectLines ZAKRESY\r\n   lub: SelectLines [-v] [-i] -e SZABLONY\r\n  ZAKRESY   - lista zakresów wierszy do wybrania. (np. -3,5-10,30-)\r\n  SZABLONY - wyrażenie regularne\r\n  -v - wybierz niepasujące wiersze\r\n  -i - ignoruj wielkość liter\r\n  -e - użyj SZABLONÓW do dopasowywania"
 
 msgid "HTML Prettier (tidy-html5).\r\nArguments: tidy command line options."
-msgstr "HTML Prettier z tidy-html5. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia tidy."
+msgstr "Upiększanie HTML (tidy-html5).\r\nArgumenty: Opcje wiersza poleceń tidy."
 
 msgid "JSON Prettier (jq).\r\nArguments: jq filter/command line options."
-msgstr "JSON Prettier z poleceniem jq. \r\nArgumenty: Filtr lub opcje wiersza poleceń przekazywane do polecenia jq."
+msgstr "Upiększanie JSON (jq).\r\nArgumenty: Filtr lub opcje wiersza poleceń jq."
 
 msgid "XML Prettier (tidy-html5).\r\nArguments: tidy command line options."
-msgstr "XML Prettier z tidy-html5. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia tidy."
+msgstr "Upiększanie XML (tidy-html5).\r\nArgumenty: Opcje wiersza poleceń tidy."
 
 msgid "YAML Prettier (yq).\r\nArguments: yq filter/command line options."
-msgstr "YAML Prettier z poleceniem yq. \r\nArgumenty: Filtr lub opcje wiersza poleceń przekazywane do polecenia yq."
+msgstr "Upiększanie YAML (yq).\r\nArgumenty: Filtr lub opcje wiersza poleceń yq."
+
+msgid "PO Prettier (gettext msgcat).\r\nArguments: msgcat command line options."
+msgstr "Upiększanie PO (gettext msgcat).\r\nArgumenty: Opcje wiersza poleceń msgcat."
 
 msgid "Graphviz Previewer.\r\nArguments: dot command line options."
-msgstr "Przeglądarka Graphviz. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia dot."
+msgstr "Przeglądarka Graphviz.\r\nArgumenty: Opcje wiersza poleceń dot."
 
 msgid "Markdown Previewer.\r\nArguments: md2html command line options."
-msgstr "Przeglądarka Markdown. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia md2html."
+msgstr "Przeglądarka Markdown.\r\nArgumenty: Opcje wiersza poleceń md2html."
 
 msgid "PlantUML Previewer.\r\nArguments: plantuml.jar command line options."
-msgstr "Przeglądarka PlantUML. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia plantuml.jar."
+msgstr "Przeglądarka PlantUML.\r\nArgumenty: Opcje wiersza poleceń plantuml.jar."
 
-msgid "CSV Querier (q).\r\nArguments: SQL statement/q comannd line options."
-msgstr "CSV Querier z poleceniem q. \r\nArgumenty: Instrukcja SQL lub opcje wiersza poleceń przekazywane do polecenia q."
+msgid "CSV Querier (q).\r\nArguments: SQL statement/q command line options."
+msgstr "CSV Querier (q).\r\nArgumenty: Instrukcja SQL lub opcje wiersza poleceń q."
 
-msgid "TSV Querier (q).\r\nArguments: SQL statement/q comannd line options."
-msgstr "TSV Querier z poleceniem q. \r\nArgumenty: Instrukcja SQL lub opcje wiersza poleceń przekazywane do polecenia q."
+msgid "TSV Querier (q).\r\nArguments: SQL statement/q command line options."
+msgstr "TSV Querier (q).\r\nArgumenty: Instrukcja SQL lub opcje wiersza poleceń q."
 
 msgid "JSON Querier (jq).\r\nArguments: jq filter/command line options."
-msgstr "JSON Querier z poleceniem jq. \r\nArgumenty: Filtr lub opcje wiersza poleceń przekazywane do polecenia jq."
+msgstr "JSON Querier (jq).\r\nArgumenty: Filtr lub opcje wiersza poleceń jq."
 
 msgid "YAML Querier (yq).\r\nArguments: yq filter/command line options."
-msgstr "YAML Querier z poleceniem yq. \r\nArgumenty: Filtr lub opcje wiersza poleceń przekazywane do polecenia yq."
+msgstr "YAML Querier (yq).\r\nArgumenty: Filtr lub opcje wiersza poleceń yq."
 
 msgid "HTML Validator (tidy-html5).\r\nArguments: tidy command line options."
-msgstr "Walidator HTML z tidy-html5. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia tidy."
+msgstr "Walidator HTML tidy-html5).\r\nArgumenty: Opcje wiersza poleceń tidy."
+
+msgid "PO Validator (gettext msgfmt).\r\nArguments: msgfmt command line options."
+msgstr "Walidator PO (gettext msgfmt).\r\nArgumenty: Opcje wiersza poleceń msgfmt."
 
 msgid "JVM bytecode disassembler (javap).\r\nArguments: javap command line options."
-msgstr "Disassembler kodu bajtowego JVM z javap. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia javap."
+msgstr "Disassembler kodu bajtowego JVM (javap).\r\nArgumenty: Opcje wiersza poleceń javap."
 
 msgid "IL disassembler (ildasm).\r\nArguments: ildasm command line options."
-msgstr "IL disassembler z ildasm. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia ildasm."
+msgstr "IL disassembler (ildasm).\r\nArgumenty: Opcje wiersza poleceń ildasm."
 
 msgid "Native code disassembler (dumpbin).\r\nArguments: dumpbin command line options."
-msgstr "Natywny kod disassemblera z dumpbin. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia dumpbin."
+msgstr "Natywny kod disassemblera (dumpbin).\r\nArgumenty: Opcje wiersza poleceń dumpbin."
 
 msgid "Content extractor (Apache Tika).\r\nArguments: tika-app.jar command line options."
-msgstr "Ogólny ekstraktor zawartości z Apache Tika. \r\nArgumenty: Opcje wiersza poleceń przekazywane do tika-app.jar."
+msgstr "Ogólny ekstraktor zawartości (Apache Tika).\r\nArgumenty: Opcje wiersza poleceń tika-app.jar."
 
 msgid "Apply patch (GNU patch)"
 msgstr "Zastosuj łatkę (łatka GNU)"
@@ -5060,10 +5120,10 @@ msgid "Date and time insertion"
 msgstr "Funkcja wstawiania daty i godziny"
 
 msgid "HTTP URL Scheme Handler (curl).\r\nArguments: curl command line options."
-msgstr "Obsługa schematu HTTP URL z curl. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia curl."
+msgstr "Obsługa schematu HTTP URL (curl).\r\nArgumenty: Opcje wiersza poleceń curl."
 
 msgid "Windows Registry URL Scheme Handler.\r\nArguments: reg.exe command line options."
-msgstr "Obsługa schematu URL rejestru Windows. \r\nArgumenty: Opcje wiersza poleceń przekazywane do polecenia reg.exe."
+msgstr "Obsługa schematu URL rejestru Windows.\r\nArgumenty: Opcje wiersza poleceń reg.exe."
 
 msgid "Basic text functions"
 msgstr "Podstawowe funkcje tekstowe"
@@ -5075,6 +5135,9 @@ msgid "Text converter (OpenAI API).\r\nUsage: AIConvertText PROMPT"
 msgstr "Konwerter tekstu wykorzystujący OpenAI API.\r\nUżycie: AIConvertText PROMPT"
 
 msgid "Unescape and display escaped Java properties files."
+msgstr ""
+
+msgid "Java decompiler (CFR).\r\nDecompiles .class files into readable Java source code.\r\nArguments: CFR command line options."
 msgstr ""
 
 msgid "CompareMSExcelFiles.sct WinMerge Plugin Options"
@@ -5118,6 +5181,9 @@ msgstr "Nie można pobrać makr.\r\nWłącz 'Ufaj dostępowi do projektu Visual 
 
 msgid "Replace line breaks in formulas with spaces"
 msgstr "Zastąp podział wierszy w formułach na spacje"
+
+msgid "Include sheet order number in filename"
+msgstr "Uwzględnij numer arkusza w nazwie pliku"
 
 msgid "Compare VBA macros"
 msgstr "Porównaj makra VBA"

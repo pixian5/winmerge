@@ -968,6 +968,9 @@ msgstr "兩邊 (&B)"
 msgid "&All"
 msgstr "全部 (&A)"
 
+msgid "&Selection"
+msgstr "選取區 (&S)"
+
 msgid "Re&name"
 msgstr "重新命名 (&N)"
 
@@ -1642,6 +1645,9 @@ msgstr "基本名稱（不含副檔名） (&B)"
 msgid "Normalized &Unicode Name"
 msgstr "已規範化 Unicode 名稱 (&U)"
 
+msgid "&Relative Path"
+msgstr ""
+
 msgid "&Date"
 msgstr "日期 (&D)"
 
@@ -1653,6 +1659,30 @@ msgstr "插入 replace()函數 (&R)"
 
 msgid "Insert rege&xReplace() Function"
 msgstr "插入 regexReplace()函數 (&X)"
+
+msgid "Replace &Lists"
+msgstr ""
+
+msgid "&Create String Replace List and Insert..."
+msgstr ""
+
+msgid "Create &Regex Replace List and Insert..."
+msgstr ""
+
+msgid "&String Replace Lists"
+msgstr ""
+
+msgid "Re&gex Replace Lists"
+msgstr ""
+
+msgid "Open String Replace Lists Folder..."
+msgstr ""
+
+msgid "Open Regex Replace Lists Folder..."
+msgstr ""
+
+msgid "Match &case"
+msgstr "區分大小寫 (&C)"
 
 msgid "Text &Normalization"
 msgstr "文本規範化 (&N)"
@@ -1686,6 +1716,9 @@ msgstr "平假名 (&H)"
 
 msgid "&Katakana"
 msgstr "片假名 (&K)"
+
+msgid "Normalize &Unicode"
+msgstr ""
 
 msgid "About WinMerge"
 msgstr "關於 WinMerge"
@@ -1774,9 +1807,6 @@ msgstr "尋找 (&N)："
 msgid "Match &whole word only"
 msgstr "只匹配完整單詞 (&W)"
 
-msgid "Match &case"
-msgstr "區分大小寫 (&C)"
-
 msgid "Regular &expression"
 msgstr "正規表達式 (&E)"
 
@@ -1803,9 +1833,6 @@ msgstr "至檔尾不折返 (&D)"
 
 msgid "Replace in"
 msgstr "替換於"
-
-msgid "&Selection"
-msgstr "選取區 (&S)"
 
 msgid "Wh&ole file"
 msgstr "整個檔案 (&O)"
@@ -2711,8 +2738,8 @@ msgstr "重新命名/移動 偵測: (&R)"
 msgid "Rename/move detection &keys:"
 msgstr "重新命名/移動 偵測鍵: (&K)"
 
-msgid "&Merge renamed items into a single item"
-msgstr "將已重新命名的項目合併為單一項目 (&M)"
+msgid "M&erge renames and moves:"
+msgstr ""
 
 msgid "File patterns:"
 msgstr "檔案模式："
@@ -3030,9 +3057,6 @@ msgstr "至中間："
 msgid "Version %1"
 msgstr "版本 %1"
 
-msgid "X64"
-msgstr "X64"
-
 #, c-format
 msgid "Options (%1)"
 msgstr "選項 (%1)"
@@ -3060,6 +3084,9 @@ msgstr "WinMerge 專案檔 (*.WinMerge)|*.WinMerge||"
 
 msgid "Options files (*.ini)|*.ini|All Files (*.*)|*.*||"
 msgstr "選項檔 (*.ini)|*.ini|所有檔案 (*.*)|*.*||"
+
+msgid "Tab-Separated Values (*.tsv;*.txt)|*.tsv;*.txt|All Files (*.*)|*.*||"
+msgstr ""
 
 msgid ""
 "Text Files (*.csv;*.asc;*.rpt;*.txt)|*.csv;*.asc;*.rpt;*.txt|All Files (*.*)|"
@@ -3955,6 +3982,9 @@ msgstr " (左側和右側內容相同)"
 msgid " (Left and middle are identical)"
 msgstr " (左側和中間內容相同)"
 
+msgid " (paths differ)"
+msgstr ""
+
 msgid "Text files are different"
 msgstr "文字檔內容不同"
 
@@ -3982,6 +4012,12 @@ msgstr "偵測重新命名"
 msgid "Detect renames and moves"
 msgstr "偵測重新命名與移動"
 
+msgid "Merge renames"
+msgstr ""
+
+msgid "Merge renames and moves"
+msgstr ""
+
 msgid "Renamed"
 msgstr "已重新命名"
 
@@ -3998,6 +4034,9 @@ msgstr "(%1 個項目)"
 #, c-format
 msgid "%1 (set %2): "
 msgstr "%1 (組合 %2):"
+
+msgid "Some moved items have been merged.\nIn Tree Mode, these items may appear in positions that do not reflect the actual folder structure, which can be confusing.\nSwitch to Flat Mode?"
+msgstr ""
 
 #, c-format
 msgid "Elapsed time: %ld ms"
@@ -5254,6 +5293,12 @@ msgstr "例:%1"
 msgid "WinMerge detected a previous crash. Please report this if possible."
 msgstr ""
 
+msgid "# Regex replacement list\r\n# Format: regex<TAB>replacement\r\n# Backreferences like $1, $2 are supported\r\n\r\n(\\d{4})-(\\d{2})-(\\d{2})\t$1_$2_$3\r\n"
+msgstr ""
+
+msgid "# Replacement list\r\n# Format: search<TAB>replacement\r\n# Lines starting with # are ignored\r\n\r\nfrom1\tto1\r\nfrom2\tto2\r\n"
+msgstr ""
+
 msgid "Prettification"
 msgstr "排版美化"
 
@@ -5359,6 +5404,9 @@ msgstr "美化 XML"
 msgid "Prettify YAML"
 msgstr "美化 YAML"
 
+msgid "Prettify PO"
+msgstr ""
+
 msgid "Preview Graphviz"
 msgstr "預覽 Graphviz"
 
@@ -5383,6 +5431,9 @@ msgstr "查詢 YAML 資料..."
 msgid "Validate HTML"
 msgstr "驗證 HTML"
 
+msgid "Validate PO"
+msgstr ""
+
 msgid "Disassemble JVM Bytecode"
 msgstr "反組譯 JVM 位元組碼"
 
@@ -5397,6 +5448,9 @@ msgstr "使用 AI 轉換文字..."
 
 msgid "Unescape Java properties files"
 msgstr "取消轉義 Java 屬性文件"
+
+msgid "Decompile Java (CFR)"
+msgstr ""
 
 msgid "Make characters uppercase"
 msgstr "字元轉換成大寫"
@@ -5531,6 +5585,9 @@ msgstr ""
 "使用 yq 命令進行 YAML 格式化。\r\n"
 "參數：傳遞給 yq 命令的過濾器或命令行選項。"
 
+msgid "PO Prettier (gettext msgcat).\r\nArguments: msgcat command line options."
+msgstr ""
+
 msgid ""
 "Graphviz Previewer.\r\n"
 "Arguments: dot command line options."
@@ -5554,14 +5611,14 @@ msgstr ""
 
 msgid ""
 "CSV Querier (q).\r\n"
-"Arguments: SQL statement/q comannd line options."
+"Arguments: SQL statement/q command line options."
 msgstr ""
 "使用 q 命令進行 CSV 查詢。\r\n"
 "參數：SQL 語句或傳遞給 q 命令的命令行選項。"
 
 msgid ""
 "TSV Querier (q).\r\n"
-"Arguments: SQL statement/q comannd line options."
+"Arguments: SQL statement/q command line options."
 msgstr ""
 "使用 q 命令進行 TSV 查詢。\r\n"
 "參數：SQL 語句或傳遞給 q 命令的命令行選項。"
@@ -5586,6 +5643,9 @@ msgid ""
 msgstr ""
 "使用 tidy-html5 進行 HTML 驗證。\r\n"
 "參數：傳遞給 tidy 命令的命令行選項。"
+
+msgid "PO Validator (gettext msgfmt).\r\nArguments: msgfmt command line options."
+msgstr ""
 
 msgid ""
 "JVM bytecode disassembler (javap).\r\n"
@@ -5679,6 +5739,9 @@ msgstr ""
 msgid "Unescape and display escaped Java properties files."
 msgstr "將已轉義的 Java 屬性檔案還原並顯示。"
 
+msgid "Java decompiler (CFR).\r\nDecompiles .class files into readable Java source code.\r\nArguments: CFR command line options."
+msgstr ""
+
 msgid "CompareMSExcelFiles.sct WinMerge Plugin Options"
 msgstr "CompareMSExcelFiles.sct WinMerge 外掛程式選項"
 
@@ -5725,6 +5788,9 @@ msgstr ""
 
 msgid "Replace line breaks in formulas with spaces"
 msgstr "將公式中的換行符號替換成空格"
+
+msgid "Include sheet order number in filename"
+msgstr ""
 
 msgid "Compare VBA macros"
 msgstr "比較 VBA 巨集"

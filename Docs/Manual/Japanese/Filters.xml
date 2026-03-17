@@ -209,6 +209,112 @@ WinMerge
 Array, or <literal>undefined</literal>.</para>
       </section>
 
+      <section id="FilterExpression_Directives">
+        <title>ディレクティブ</title>
+
+        <para>
+フィルタ式は、式の評価方法を制御するディレクティブをサポートしています。ディレクティブは式の先頭に指定し、<literal>@</literal>
+を付けて記述し、式本体とは空白で区切ります。</para>
+
+        <section id="FilterExpression_CaseSensitivity">
+          <title>大文字小文字の区別に関するディレクティブ</title>
+
+          <para>
+デフォルトでは、すべての文字列比較演算子（<literal>=</literal>、<literal>!=</literal>、<literal>&lt;</literal>、<literal>&lt;=</literal>、<literal>&gt;</literal>、<literal>&gt;=</literal>、<literal>contains</literal>、<literal>recontains</literal>、<literal>like</literal>、<literal>matches</literal>）は大文字小文字を区別しません。この動作は次のディレクティブで制御できます。</para>
+
+          <variablelist>
+            <varlistentry>
+              <term><literal>@cs</literal>, <literal>@casesensitive</literal></term>
+              <listitem>
+                <para>
+大文字小文字を区別する比較を有効にします。これらのディレクティブを指定すると、<literal>"ABC"</literal> と
+<literal>"abc"</literal> は異なるものとして扱われます。</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><literal>@ci</literal>, <literal>@caseinsensitive</literal>literal></term>
+              <listitem>
+                <para>
+大文字小文字を区別しない比較を有効にします（デフォルトの動作）。これらのディレクティブを指定すると、<literal>"ABC"</literal> と
+<literal>"abc"</literal> は同一として扱われます。</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <example>
+            <title>大文字小文字の区別の例</title>
+<programlisting>@cs Name = "README.txt"           ## 大文字小文字を区別: "README.txt" のみ一致
+@ci Name = "readme.txt"           ## 大文字小文字を区別しない: "README.txt", "readme.txt", "ReadMe.TXT" などに一致
+@casesensitive Extension = "TXT"  ## 大文字小文字を区別: 拡張子 ".TXT" のファイルのみ一致
+@caseinsensitive Content contains "error"  ## 大文字小文字を区別しない: "Error", "ERROR", "error" などに一致</programlisting></example>
+        </section>
+
+        <section id="FilterExpression_Optimize">
+          <title>最適化ディレクティブ</title>
+
+          <para>
+デフォルトでは、フィルタ式はパフォーマンス向上のために最適化されます。この動作は次のディレクティブで制御できます。</para>
+
+          <variablelist>
+            <varlistentry>
+              <term><literal>@optimize</literal>, <literal>@opt</literal></term>
+              <listitem>
+                <para>
+フィルタ式の最適化を有効にします（デフォルトの動作）。複雑な式の場合、パフォーマンスが向上する可能性があります。</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><literal>@nooptimize</literal>, <literal>@noopt</literal></term>
+              <listitem>
+                <para>
+フィルタ式の最適化を無効にします。デバッグ時や、最適化によって予期しない結果が発生する場合に役立ちます。</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <example>
+            <title>最適化の例</title>
+<programlisting>@optimize Size &gt; 10MB and Extension = "log"     ## 最適化を有効（デフォルト）
+@noopt Name matches "complex[0-9]+pattern"    ## デバッグのため最適化を無効
+@nooptimize Content contains "special-case"   ## 最適化を無効</programlisting></example>
+        </section>
+
+        <section id="FilterExpression_Name">
+          <title>Name ディレクティブ</title>
+
+          <para>
+<literal>@name</literal>
+ディレクティブを使用すると、フィルタ式に説明用の名前を付けることができます。この名前はエラーメッセージやログで使用され、どのフィルタ式が問題を引き起こしたかを識別するのに役立ちます。</para>
+
+          <variablelist>
+            <varlistentry>
+              <term><literal>@name="Filter Name"</literal>, <literal>@name=FilterName</literal></term>
+              <listitem>
+                <para>
+フィルタ式に名前を付けます。名前に空白や特殊文字を含む場合は、二重引用符で囲む必要があります。空白を含まない名前は引用符なしで指定できます。</para>
+                <para>
+指定した名前は、エラーメッセージや診断出力でフィルタを識別するために使用されます。複数の複雑なフィルタ式を扱う場合に特に便利です。</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <example>
+            <title>Name ディレクティブの例</title>
+<programlisting>@name="Large Image Files" Size &gt; 10MB and Extension = "png"
+@name=SmallTextFiles Size &lt; 1KB and Extension = "txt"
+@name="Modified Today" Date &gt;= today()
+@name="Test Filter" @cs Name like "test_*.cpp"</programlisting></example>
+
+          <note>
+            <para>
+<literal>@name</literal>
+ディレクティブは他のディレクティブと組み合わせて使用できます。複数のディレクティブを使用する場合は、すべて式の先頭に記述し、空白で区切ります。</para>
+          </note>
+        </section>
+      </section>
+
       <section id="FilterExpression_Attributes">
         <title>Attributes</title>
 
@@ -243,6 +349,11 @@ Right, Middle）かを接頭辞で指定できます。</para>
             <varlistentry>
               <term>Folder</term>
               <listitem><para>ファイル名およびベースフォルダーを除いた相対パスを返します。</para></listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>RelPath</term>
+              <listitem><para>比較ルートディレクトリからの相対パスを、フォルダーパスとファイル名を含めて返します。例えば、"C:\Project" を比較していて、ファイルが
+"C:\Project\src\main.cpp" にある場合、RelPath は "src\main.cpp" を返します。</para></listitem>
             </varlistentry>
             <varlistentry>
               <term>FullPath</term>
@@ -453,8 +564,8 @@ Right, Middle）かを接頭辞で指定できます。</para>
         <title>演算子</title>
 
         <para>
-<literal>=</literal>、<literal>!=</literal>、<literal>like</literal>、<literal>matches</literal>、<literal>contains</literal>、<literal>recontains</literal>
-などの文字列比較演算子は、現在すべて大文字小文字を区別しません。</para>
+デフォルトでは、すべての文字列比較演算子（<literal>=</literal>、<literal>!=</literal>、<literal>&lt;</literal>、<literal>&lt;=</literal>、<literal>&gt;</literal>、<literal>&gt;=</literal>、<literal>like</literal>、<literal>matches</literal>、<literal>contains</literal>、<literal>recontains</literal>）は大文字小文字を区別しません。この動作はディレクティブで制御できます（<xref
+linkend="FilterExpression_CaseSensitivity" /> を参照）。</para>
 
         <variablelist>
           <varlistentry>
@@ -562,6 +673,50 @@ replace(name, "_old", "_new")</para>
 正規表現 pattern に一致するすべての部分を replacement 文字列で置換します。replacement 文字列では後方参照（$1、$2
 など）を使用できます。<replaceable>str</replaceable>が文字列配列の場合、結果は文字列配列になります。例:
 regexReplace(name, "^(\w+)(\w+)$", "$2$1") は、アンダースコアで区切られた単語の順序を入れ替えます。</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>replaceWithList(str, filepath)</term>
+            <listitem>
+              <para>
+タブ区切りファイルから読み込んだ置換ルールを使用して、<replaceable>str</replaceable>
+内の複数の文字列を置換します。ファイル形式は 1 行につき 1
+つの置換ルールで、<literal>search_string&lt;TAB&gt;replacement_string</literal>
+の形式です。<literal>#</literal>
+で始まる行はコメントとして扱われ、無視されます。空行も無視されます。<replaceable>str</replaceable>
+が配列の場合、置換が適用された文字列の配列が結果として返されます。</para>
+              <para>ファイル形式の例:</para>
+              <screen># コメント行
+apple	orange
+cat	dog
+old	new</screen>
+              <para>例:</para>
+              <itemizedlist>
+                <listitem><para><literal>replaceWithList(Name, "C:\Filters\replacements.txt")</literal> -
+ファイル内の置換ルールをファイル名に適用します</para></listitem>
+              </itemizedlist>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>regexReplaceWithList(str, filepath)</term>
+            <listitem>
+              <para>
+タブ区切りファイルから読み込んだ正規表現パターンを使用して、<replaceable>str</replaceable>
+内の文字列を置換します。ファイル形式は 1 行につき 1
+つのパターンで、<literal>regex_pattern&lt;TAB&gt;replacement_string</literal>
+の形式です。置換文字列には、キャプチャされたグループへの後方参照 ($1, $2 など)
+を含めることができます。<literal>#</literal>
+で始まる行はコメントとして扱われ、無視されます。空行も無視されます。<replaceable>str</replaceable>
+が配列の場合、置換が適用された文字列の配列が結果として返されます。</para>
+              <para>ファイル形式の例:</para>
+              <screen># コメント行
+\d+	NUMBER
+(\d{4})-(\d{2})-(\d{2})	$1_$2_$3</screen>
+              <para>例:</para>
+              <itemizedlist>
+                <listitem><para><literal>regexReplaceWithList(Name,
+"C:\Filters\regex_replacements.txt")</literal> - 正規表現による置換をファイル名に適用します</para></listitem>
+              </itemizedlist>
             </listitem>
           </varlistentry>
           <varlistentry>
@@ -1124,6 +1279,8 @@ expression.  The supported type designators are:</para>
         <varlistentry><term>fe!: <replaceable>式</replaceable></term><listitem><para>ファイルを除外するためのフィルター式（2.16.49 以降で使用可能）</para></listitem></varlistentry>
         <varlistentry><term>de: <replaceable>式</replaceable></term><listitem><para>フォルダーに対するフィルター式（2.16.49 以降で使用可能）</para></listitem></varlistentry>
         <varlistentry><term>de!: <replaceable>式</replaceable></term><listitem><para>フォルダーを除外するためのフィルター式（2.16.49 以降で使用可能）</para></listitem></varlistentry>
+        <varlistentry><term>e: <replaceable>式</replaceable></term><listitem><para>ファイルとフォルダー両方に適用されるフィルター式（例: e:Name like "Common*.*"）（2.16.56 以降で使用可能）</para></listitem></varlistentry>
+        <varlistentry><term>e!: <replaceable>式</replaceable></term><listitem><para>ファイルとフォルダー両方を除外するためのフィルター式（2.16.56 以降で使用可能）</para></listitem></varlistentry>
       </variablelist>
 
       <para>多くの正規表現の特殊文字の中で、次の文字は、ファイルフィルターでは特に重要です: <indexterm>

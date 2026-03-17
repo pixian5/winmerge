@@ -145,7 +145,7 @@ Name: German; MessagesFile: compiler:Languages\German.isl,..\..\Translations\Inn
 Name: Greek; MessagesFile: compiler:Languages\Greek.isl,..\..\Translations\InnoSetup\Greek.islu; InfoAfterFile: ..\..\Translations\Docs\Readme\ReadMe-Greek.txt
 Name: Hebrew; MessagesFile: compiler:Languages\Hebrew.isl,..\..\Translations\InnoSetup\Hebrew.islu; InfoAfterFile: ..\..\Translations\Docs\Readme\ReadMe-Hebrew.txt
 Name: Hungarian; MessagesFile: compiler:Languages\Hungarian.isl,..\..\Translations\InnoSetup\Hungarian.islu; InfoAfterFile: ..\..\Translations\Docs\Readme\ReadMe-Hungarian.txt
-Name: Italian; MessagesFile: compiler:Languages\Italian.isl,..\..\Translations\InnoSetup\Italian.islu; InfoAfterFile: ..\..\Translations\Docs\Readme\ReadMe-Italian.txt
+Name: Italian; MessagesFile: ..\..\Translations\InnoSetup\Unbundled.is5\Italian.isl,..\..\Translations\InnoSetup\Italian.islu; InfoAfterFile: ..\..\Translations\Docs\Readme\ReadMe-Italian.txt
 Name: Japanese; MessagesFile: compiler:Languages\Japanese.isl,..\..\Translations\InnoSetup\Japanese.islu; InfoAfterFile: ..\..\Translations\Docs\Readme\ReadMe-Japanese.txt
 Name: Korean; MessagesFile: ..\..\Translations\InnoSetup\Unbundled.is5\Korean.isl,..\..\Translations\InnoSetup\Korean.islu; InfoAfterFile: ..\..\Translations\Docs\Readme\ReadMe-Korean.txt
 Name: Lithuanian; MessagesFile: ..\..\Translations\InnoSetup\Unbundled.is5\Lithuanian.isl,..\..\Translations\InnoSetup\Lithuanian.islu; InfoAfterFile: ..\..\Translations\Docs\Readme\ReadMe-Lithuanian.txt
@@ -486,6 +486,7 @@ Source: ..\..\Translations\Docs\Readme\ReadMe-Finnish.txt; DestDir: {app}\Docs; 
 Source: ..\..\Translations\WinMerge\French.po; DestDir: {app}\Languages; Components: Languages\French; Flags: ignoreversion comparetimestamp
 Source: ..\..\Translations\ShellExtension\French.po; DestDir: {app}\Languages\ShellExtension; Components: Languages\French; Flags: ignoreversion comparetimestamp
 Source: ..\..\Translations\Docs\Readme\ReadMe-French.txt; DestDir: {app}\Docs; Components: Languages\French
+Source: ..\..\Build\Manual\htmlhelp\WinMergeFrench.chm; DestDir: {app}\Docs; Components: Languages\French
 Source: ..\..\Translations\WinMerge\Galician.po; DestDir: {app}\Languages; Components: Languages\Galician; Flags: ignoreversion comparetimestamp
 Source: ..\..\Translations\ShellExtension\Galician.po; DestDir: {app}\Languages\ShellExtension; Components: Languages\Galician; Flags: ignoreversion comparetimestamp
 Source: ..\..\Translations\Docs\Readme\ReadMe-Galician.txt; DestDir: {app}\Docs; Components: Languages\Galician
@@ -658,6 +659,11 @@ Source: ..\..\Plugins\Commands\ildasm\*.bat; DestDir: {app}\Commands\ildasm; Fla
 ; Java
 Source: ..\..\Plugins\Commands\Java\*.bat; DestDir: {app}\Commands\Java; Flags: recursesubdirs; Components: Plugins
 Source: ..\..\Plugins\Commands\Java\*.txt; DestDir: {app}\Commands\Java; Flags: recursesubdirs; Components: Plugins
+; CFR
+Source: ..\..\Plugins\Commands\CFR\*.bat; DestDir: {app}\Commands\CFR; Flags: recursesubdirs; Components: Plugins
+Source: ..\..\Plugins\Commands\CFR\*.txt; DestDir: {app}\Commands\CFR; Flags: recursesubdirs; Components: Plugins
+; gettext
+Source: ..\..\Plugins\Commands\gettext\*.bat; DestDir: {app}\Commands\gettext; Flags: recursesubdirs; Components: Plugins
 ; DownloadFiles.bat
 Source: ..\..\Plugins\Commands\DownloadFiles.bat; DestDir: {app}\Commands\; Flags: recursesubdirs; Components: Plugins
 

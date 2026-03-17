@@ -118,6 +118,7 @@ private:
 	bool MergeModeKeyDown(MSG* pMsg);
 	static void OnChildPaneEvent(const IImgMergeWindow::Event& evt);
 	void OnDropFiles(int pane, const std::vector<String>& files);
+	bool m_bInOnClose = false;
 	static void TranslateLocationPane(int id, const wchar_t *org, size_t dstbufsize, wchar_t *dst);
 	CLocationBar m_wndLocationBar;
 	IImgMergeWindow *m_pImgMergeWindow;
@@ -249,6 +250,8 @@ protected:
 	afx_msg void OnUpdateImgOverlayAnimationInterval(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateImgUseBackColor(CCmdUI* pCmdUI);
 	afx_msg void OnImgCompareExtractedText();
+	afx_msg void OnShellMenu();
+	afx_msg void OnUpdateShellMenu(CCmdUI* pCmdUI);
 	afx_msg void OnToolsGenerateReport();
 	afx_msg void OnRefresh();
 	afx_msg void OnSetFocus(CWnd *pNewWnd);

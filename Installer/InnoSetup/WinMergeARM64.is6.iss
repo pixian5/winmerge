@@ -497,6 +497,7 @@ Source: ..\..\Translations\Docs\Readme\ReadMe-Finnish.txt; DestDir: {app}\Docs; 
 Source: ..\..\Translations\WinMerge\French.po; DestDir: {app}\Languages; Components: Languages\French; Flags: ignoreversion comparetimestamp
 Source: ..\..\Translations\ShellExtension\French.po; DestDir: {app}\Languages\ShellExtension; Components: Languages\French; Flags: ignoreversion comparetimestamp
 Source: ..\..\Translations\Docs\Readme\ReadMe-French.txt; DestDir: {app}\Docs; Components: Languages\French
+Source: ..\..\Build\Manual\htmlhelp\WinMergeFrench.chm; DestDir: {app}\Docs; Components: Languages\French
 Source: ..\..\Translations\WinMerge\Galician.po; DestDir: {app}\Languages; Components: Languages\Galician; Flags: ignoreversion comparetimestamp
 Source: ..\..\Translations\ShellExtension\Galician.po; DestDir: {app}\Languages\ShellExtension; Components: Languages\Galician; Flags: ignoreversion comparetimestamp
 Source: ..\..\Translations\Docs\Readme\ReadMe-Galician.txt; DestDir: {app}\Docs; Components: Languages\Galician
@@ -669,6 +670,11 @@ Source: ..\..\Plugins\Commands\ildasm\*.bat; DestDir: {app}\Commands\ildasm; Fla
 ; Java
 Source: ..\..\Plugins\Commands\Java\*.bat; DestDir: {app}\Commands\Java; Flags: recursesubdirs; Components: Plugins
 Source: ..\..\Plugins\Commands\Java\*.txt; DestDir: {app}\Commands\Java; Flags: recursesubdirs; Components: Plugins
+; CFR
+Source: ..\..\Plugins\Commands\CFR\*.bat; DestDir: {app}\Commands\CFR; Flags: recursesubdirs; Components: Plugins
+Source: ..\..\Plugins\Commands\CFR\*.txt; DestDir: {app}\Commands\CFR; Flags: recursesubdirs; Components: Plugins
+; gettext
+Source: ..\..\Plugins\Commands\gettext\*.bat; DestDir: {app}\Commands\gettext; Flags: recursesubdirs; Components: Plugins
 ; DownloadFiles.bat
 Source: ..\..\Plugins\Commands\DownloadFiles.bat; DestDir: {app}\Commands\; Flags: recursesubdirs; Components: Plugins
 

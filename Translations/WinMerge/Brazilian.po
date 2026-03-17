@@ -6,13 +6,14 @@
 # * Leonardo Peixoto <ljpeixoto at gmail.com>
 # * Felipe Periard Lopes <felipefplzx at gmail.com>
 # * Marcello Oliveira <marcello.mco at gmail.com>
+# * Ricardo <RicardoPC1967>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: WinMerge\n"
 "Report-Msgid-Bugs-To: https://github.com/WinMerge/winmerge/issues/\n"
 "POT-Creation-Date: 2023-03-13 09:30-0300\n"
-"PO-Revision-Date: 2026-01-29 19:47-0300\n"
+"PO-Revision-Date: 2026-03-11 11:00-0300\n"
 "Last-Translator: Marcello <marcello.mco@gmail.com>\n"
 "Language-Team: Felipe\n"
 "Language: pt_BR\n"
@@ -964,6 +965,9 @@ msgstr "&Ambos"
 msgid "&All"
 msgstr "&Tudo"
 
+msgid "&Selection"
+msgstr "&Seleção"
+
 msgid "Re&name"
 msgstr "Re&nomear"
 
@@ -1638,6 +1642,9 @@ msgstr "Nome &base (sem extensão)"
 msgid "Normalized &Unicode Name"
 msgstr "Nome &Unicode Normalizado"
 
+msgid "&Relative Path"
+msgstr "Caminho &Relativo"
+
 msgid "&Date"
 msgstr "&Data"
 
@@ -1649,6 +1656,30 @@ msgstr "Inserir Função &replace()"
 
 msgid "Insert rege&xReplace() Function"
 msgstr "Inserir Função rege&xReplace()"
+
+msgid "Replace &Lists"
+msgstr "Substituir &Listas"
+
+msgid "&Create String Replace List and Insert..."
+msgstr "&Criar Lista de Substituição de String e Adicionar..."
+
+msgid "Create &Regex Replace List and Insert..."
+msgstr "Criar Lista de Substituição &Regex e Adicionar..."
+
+msgid "&String Replace Lists"
+msgstr "Listas de Substituição de &String"
+
+msgid "Re&gex Replace Lists"
+msgstr "Listas de Substituição de Re&gex"
+
+msgid "Open String Replace Lists Folder..."
+msgstr "Abrir Pasta de Listas de Substituição de String..."
+
+msgid "Open Regex Replace Lists Folder..."
+msgstr "Abrir Pasta de Listas de Substituição de Regex..."
+
+msgid "Match &case"
+msgstr "&Corresponder maiúsculas/minúsculas"
 
 msgid "Text &Normalization"
 msgstr "&Normalização de Texto"
@@ -1682,6 +1713,9 @@ msgstr "&Hiragana"
 
 msgid "&Katakana"
 msgstr "&Katakana"
+
+msgid "Normalize &Unicode"
+msgstr "Normalizar &Unicode"
 
 msgid "About WinMerge"
 msgstr "Sobre o WinMerge"
@@ -1770,9 +1804,6 @@ msgstr "E&ncontrar o quê:"
 msgid "Match &whole word only"
 msgstr "C&orresponder apenas palavras inteiras"
 
-msgid "Match &case"
-msgstr "&Corresponder maiúsculas/minúsculas"
-
 msgid "Regular &expression"
 msgstr "Expressão &regular"
 
@@ -1799,9 +1830,6 @@ msgstr "&Não quebrar no final do arquivo"
 
 msgid "Replace in"
 msgstr "Substituir em"
-
-msgid "&Selection"
-msgstr "&Seleção"
 
 msgid "Wh&ole file"
 msgstr "O &arquivo inteiro"
@@ -2692,8 +2720,8 @@ msgstr "Detecção de r&enomear/mover:"
 msgid "Rename/move detection &keys:"
 msgstr "C&haves de detecção de renomear/mover:"
 
-msgid "&Merge renamed items into a single item"
-msgstr "&Unir itens renomeados em um único item"
+msgid "M&erge renames and moves:"
+msgstr "Unir renom&eados e movidos:"
 
 msgid "File patterns:"
 msgstr "Padrões de arquivo:"
@@ -2955,9 +2983,6 @@ msgstr "Para o meio:"
 msgid "Version %1"
 msgstr "Versão %1"
 
-msgid "X64"
-msgstr "X64"
-
 #, c-format
 msgid "Options (%1)"
 msgstr "Opções (%1)"
@@ -2983,6 +3008,9 @@ msgstr "Arquivos de Projeto do WinMerge (*.WinMerge)|*.WinMerge||"
 
 msgid "Options files (*.ini)|*.ini|All Files (*.*)|*.*||"
 msgstr "Arquivos de Opções (*.ini)|*.ini|Todos os Arquivos (*.*)|*.*||"
+
+msgid "Tab-Separated Values (*.tsv;*.txt)|*.tsv;*.txt|All Files (*.*)|*.*||"
+msgstr "Valores Separados por Tab (*.tsv;*.txt)|*.tsv;*.txt|Todos os Arquivos (*.*)|*.*||"
 
 msgid "Text Files (*.csv;*.asc;*.rpt;*.txt)|*.csv;*.asc;*.rpt;*.txt|All Files (*.*)|*.*||"
 msgstr "Arquivos de Texto (*.csv;*.asc;*.rpt;*.txt)|*.csv;*.asc;*.rpt;*.txt|Todos os Arquivos (*.*)|*.*||"
@@ -3712,6 +3740,9 @@ msgstr " (O da esquerda e o da direita são idênticos)"
 msgid " (Left and middle are identical)"
 msgstr " (O da esquerda e o do meio são idênticos)"
 
+msgid " (paths differ)"
+msgstr " (diferenças nos caminhos)"
+
 msgid "Text files are different"
 msgstr "Os arquivos de texto são diferentes"
 
@@ -3739,6 +3770,12 @@ msgstr "Detectar renomeações"
 msgid "Detect renames and moves"
 msgstr "Detectar renomeações e movimentações"
 
+msgid "Merge renames"
+msgstr "Unir renomeados"
+
+msgid "Merge renames and moves"
+msgstr "Unir renomeados e movidos"
+
 msgid "Renamed"
 msgstr "Renomeados"
 
@@ -3755,6 +3792,9 @@ msgstr "(%1 itens)"
 #, c-format
 msgid "%1 (set %2): "
 msgstr "%1 (conjunto %2): "
+
+msgid "Some moved items have been merged.\nIn Tree Mode, these items may appear in positions that do not reflect the actual folder structure, which can be confusing.\nSwitch to Flat Mode?"
+msgstr "Alguns itens movidos foram unidos.\nNo Modo Árvore, estes itens podem aparecer em posições que não refletem a estrutura real da pasta, o que pode ser confuso.\nAlternar para Modo Normal?"
 
 #, c-format
 msgid "Elapsed time: %ld ms"
@@ -4792,6 +4832,12 @@ msgstr "p.ex. %1"
 msgid "WinMerge detected a previous crash. Please report this if possible."
 msgstr "O WinMerge detectou um travamento ocorrido. Por favor, relate-o, se possível."
 
+msgid "# Regex replacement list\r\n# Format: regex<TAB>replacement\r\n# Backreferences like $1, $2 are supported\r\n\r\n(\\d{4})-(\\d{2})-(\\d{2})\t$1_$2_$3\r\n"
+msgstr "# Lista de substituição Regex\r\n# Formato: regex<TAB>substituto\r\n# Referências anteriores como $1, $2 são suportadas\r\n\r\n(\\d{4})-(\\d{2})-(\\d{2})\t$1_$2_$3\r\n"
+
+msgid "# Replacement list\r\n# Format: search<TAB>replacement\r\n# Lines starting with # are ignored\r\n\r\nfrom1\tto1\r\nfrom2\tto2\r\n"
+msgstr "# Lista de substuição\r\n# Formato: busca<TAB>substituto\r\n# Linhas começando com # são ignoradas\r\n\r\nde1\tpara1\r\nde2\tpara2\r\n"
+
 msgid "Prettification"
 msgstr "Embelezamento"
 
@@ -4897,6 +4943,9 @@ msgstr "Embelezar XML"
 msgid "Prettify YAML"
 msgstr "Embelezar YAML"
 
+msgid "Prettify PO"
+msgstr "Embelezar PO"
+
 msgid "Preview Graphviz"
 msgstr "Pré-visualizar Graphviz"
 
@@ -4921,6 +4970,9 @@ msgstr "Consultar Dados de YAML..."
 msgid "Validate HTML"
 msgstr "Validar HTML"
 
+msgid "Validate PO"
+msgstr "Validar PO"
+
 msgid "Disassemble JVM Bytecode"
 msgstr "Desmontar Bytecode da JVM"
 
@@ -4935,6 +4987,9 @@ msgstr "Converter Texto com IA..."
 
 msgid "Unescape Java properties files"
 msgstr "Remover escape dos arquivos de propriedades Java"
+
+msgid "Decompile Java (CFR)"
+msgstr "Descompilar Java (CFR)"
 
 msgid "Make characters uppercase"
 msgstr "Converter caracteres para maiúsculos"
@@ -4991,6 +5046,9 @@ msgstr "XML Mais Bonito (tidy-html5). \r\nArgumentos: opções da linha de coman
 msgid "YAML Prettier (yq).\r\nArguments: yq filter/command line options."
 msgstr "YAML Mais Bonito (yq).\r\nArgumentos: opções do filtro/linha de comando do yq."
 
+msgid "PO Prettier (gettext msgcat).\r\nArguments: msgcat command line options."
+msgstr "PO Mais Bonito (gettext msgcat).\r\nArgumentos: opções da linha de comando do msgcat."
+
 msgid "Graphviz Previewer.\r\nArguments: dot command line options."
 msgstr "Pré-Visualizador Graphviz.\r\nArgumentos: opções da linha de comando do dot."
 
@@ -5000,10 +5058,10 @@ msgstr "Pré-Visualizador Markdown.\r\nArgumentos: opções da linha de comando 
 msgid "PlantUML Previewer.\r\nArguments: plantuml.jar command line options."
 msgstr "Pré-Visualizador PlantUML.\r\nArgumentos: opções da linha de comando do plantuml.jar."
 
-msgid "CSV Querier (q).\r\nArguments: SQL statement/q comannd line options."
+msgid "CSV Querier (q).\r\nArguments: SQL statement/q command line options."
 msgstr "Consultador de CSV (q).\r\nArgumentos: instrução SQL/opções da linha de comando do q."
 
-msgid "TSV Querier (q).\r\nArguments: SQL statement/q comannd line options."
+msgid "TSV Querier (q).\r\nArguments: SQL statement/q command line options."
 msgstr "Consultador de TSV (q).\r\nArgumentos: instrução SQL/opções da linha de comando do q."
 
 msgid "JSON Querier (jq).\r\nArguments: jq filter/command line options."
@@ -5014,6 +5072,9 @@ msgstr "Consultador de YAML (yq).\r\nArgumentos: opções do filtro/linha de com
 
 msgid "HTML Validator (tidy-html5).\r\nArguments: tidy command line options."
 msgstr "Validador de HTML (tidy-html5).\r\nArgumentos: opções da linha de comando do tidy."
+
+msgid "PO Validator (gettext msgfmt).\r\nArguments: msgfmt command line options."
+msgstr "Validador de PO (gettext msgfmt).\r\nArgumentos: opções da linha de comando do msgfmt."
 
 msgid "JVM bytecode disassembler (javap).\r\nArguments: javap command line options."
 msgstr "Desmontador de bytecode da JVM (javap).\r\nArgumentos: opções da linha de comando do javap."
@@ -5078,6 +5139,9 @@ msgstr "Conversor de texto (API da OpenAI).\r\nUso: AIConvertText PROMPT"
 msgid "Unescape and display escaped Java properties files."
 msgstr "Remover escape e exibir arquivos de propriedades Java com escape."
 
+msgid "Java decompiler (CFR).\r\nDecompiles .class files into readable Java source code.\r\nArguments: CFR command line options."
+msgstr "Descompilador Java (CFR).\r\nDescompila arquivos .class em código Java legível.\r\nArgumentos: Opções de linha de comando do CFR."
+
 msgid "CompareMSExcelFiles.sct WinMerge Plugin Options"
 msgstr "Opções do Plugin do WinMerge CompareMSExcelFiles.sct"
 
@@ -5119,6 +5183,9 @@ msgstr "Não é possível obter Macros.\r\nHabilite ‘Confiar no acesso ao Proj
 
 msgid "Replace line breaks in formulas with spaces"
 msgstr "Substituir quebras de linha em fórmulas com espaços"
+
+msgid "Include sheet order number in filename"
+msgstr "Incluir número de sequência de aba de planilha no nome do arquivo"
 
 msgid "Compare VBA macros"
 msgstr "Comparar macros do VBA"

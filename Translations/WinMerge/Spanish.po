@@ -966,6 +966,9 @@ msgstr "&Ambos"
 msgid "&All"
 msgstr "&Todos"
 
+msgid "&Selection"
+msgstr "&Selección"
+
 msgid "Re&name"
 msgstr "Re&nombrar"
 
@@ -1640,6 +1643,9 @@ msgstr ""
 msgid "Normalized &Unicode Name"
 msgstr ""
 
+msgid "&Relative Path"
+msgstr ""
+
 msgid "&Date"
 msgstr ""
 
@@ -1651,6 +1657,30 @@ msgstr ""
 
 msgid "Insert rege&xReplace() Function"
 msgstr ""
+
+msgid "Replace &Lists"
+msgstr ""
+
+msgid "&Create String Replace List and Insert..."
+msgstr ""
+
+msgid "Create &Regex Replace List and Insert..."
+msgstr ""
+
+msgid "&String Replace Lists"
+msgstr ""
+
+msgid "Re&gex Replace Lists"
+msgstr ""
+
+msgid "Open String Replace Lists Folder..."
+msgstr ""
+
+msgid "Open Regex Replace Lists Folder..."
+msgstr ""
+
+msgid "Match &case"
+msgstr "&Coincidir MAYÚSCULAS/minúsculas"
 
 msgid "Text &Normalization"
 msgstr ""
@@ -1683,6 +1713,9 @@ msgid "&Hiragana"
 msgstr ""
 
 msgid "&Katakana"
+msgstr ""
+
+msgid "Normalize &Unicode"
 msgstr ""
 
 msgid "About WinMerge"
@@ -1772,9 +1805,6 @@ msgstr "Qué &buscar:"
 msgid "Match &whole word only"
 msgstr "Solo palabras &completas"
 
-msgid "Match &case"
-msgstr "&Coincidir MAYÚSCULAS/minúsculas"
-
 msgid "Regular &expression"
 msgstr "&Expresión regular"
 
@@ -1801,9 +1831,6 @@ msgstr "&Detenerse al final del archivo"
 
 msgid "Replace in"
 msgstr "Reemplazar en"
-
-msgid "&Selection"
-msgstr "&Selección"
 
 msgid "Wh&ole file"
 msgstr "T&odo el archivo"
@@ -2702,7 +2729,7 @@ msgstr ""
 msgid "Rename/move detection &keys:"
 msgstr ""
 
-msgid "&Merge renamed items into a single item"
+msgid "M&erge renames and moves:"
 msgstr ""
 
 msgid "File patterns:"
@@ -3013,9 +3040,6 @@ msgstr "Al central:"
 msgid "Version %1"
 msgstr "Versión %1"
 
-msgid "X64"
-msgstr "X64"
-
 #, c-format
 msgid "Options (%1)"
 msgstr "Configuración (%1)"
@@ -3044,6 +3068,9 @@ msgstr "Archivos de proyecto de WinMerge (*.WinMerge) |*.WinMerge| |"
 
 msgid "Options files (*.ini)|*.ini|All Files (*.*)|*.*||"
 msgstr "Archivos de opciones (*.ini) |*.ini| Todos los archivos (*.*) |*.*| |"
+
+msgid "Tab-Separated Values (*.tsv;*.txt)|*.tsv;*.txt|All Files (*.*)|*.*||"
+msgstr ""
 
 msgid "Text Files (*.csv;*.asc;*.rpt;*.txt)|*.csv;*.asc;*.rpt;*.txt|All Files (*.*)|*.*||"
 msgstr "Archivos de texto (*.csv; *.asc; *.rpt; *.txt) | *.csv; *.asc; *.rpt; *.txt | Todos los archivos (*.*) |*.*| |"
@@ -3941,6 +3968,9 @@ msgstr " (Izquierdo y derecho son idénticos)"
 msgid " (Left and middle are identical)"
 msgstr " (Izquierdo y central son idénticos)"
 
+msgid " (paths differ)"
+msgstr ""
+
 msgid "Text files are different"
 msgstr "Los archivos de texto son diferentes"
 
@@ -3968,6 +3998,12 @@ msgstr ""
 msgid "Detect renames and moves"
 msgstr ""
 
+msgid "Merge renames"
+msgstr ""
+
+msgid "Merge renames and moves"
+msgstr ""
+
 msgid "Renamed"
 msgstr ""
 
@@ -3983,6 +4019,9 @@ msgstr ""
 
 #, c-format
 msgid "%1 (set %2): "
+msgstr ""
+
+msgid "Some moved items have been merged.\nIn Tree Mode, these items may appear in positions that do not reflect the actual folder structure, which can be confusing.\nSwitch to Flat Mode?"
 msgstr ""
 
 #, c-format
@@ -5220,6 +5259,12 @@ msgstr ""
 msgid "WinMerge detected a previous crash. Please report this if possible."
 msgstr ""
 
+msgid "# Regex replacement list\r\n# Format: regex<TAB>replacement\r\n# Backreferences like $1, $2 are supported\r\n\r\n(\\d{4})-(\\d{2})-(\\d{2})\t$1_$2_$3\r\n"
+msgstr ""
+
+msgid "# Replacement list\r\n# Format: search<TAB>replacement\r\n# Lines starting with # are ignored\r\n\r\nfrom1\tto1\r\nfrom2\tto2\r\n"
+msgstr ""
+
 msgid "Prettification"
 msgstr "Mejoras"
 
@@ -5325,6 +5370,9 @@ msgstr "Mejorar XML"
 msgid "Prettify YAML"
 msgstr "Mejorar YAML"
 
+msgid "Prettify PO"
+msgstr ""
+
 msgid "Preview Graphviz"
 msgstr "Vista previa de Graphviz"
 
@@ -5349,6 +5397,9 @@ msgstr "Consulta de datos YAML..."
 msgid "Validate HTML"
 msgstr "Validar HTML"
 
+msgid "Validate PO"
+msgstr ""
+
 msgid "Disassemble JVM Bytecode"
 msgstr "Desensamblar JVM Bytecode"
 
@@ -5363,6 +5414,9 @@ msgstr "Convertir texto con IA..."
 
 msgid "Unescape Java properties files"
 msgstr "Desescapar archivos de propiedades Java"
+
+msgid "Decompile Java (CFR)"
+msgstr ""
 
 msgid "Make characters uppercase"
 msgstr "Convertir a mayúsculas"
@@ -5497,6 +5551,9 @@ msgstr ""
 "Mejorar YAML con el comando yq. \r\n"
 "Argumentos: Filtro u opciones de línea de comandos pasados al comando yq."
 
+msgid "PO Prettier (gettext msgcat).\r\nArguments: msgcat command line options."
+msgstr ""
+
 msgid ""
 "Graphviz Previewer.\r\n"
 "Arguments: dot command line options."
@@ -5520,14 +5577,14 @@ msgstr ""
 
 msgid ""
 "CSV Querier (q).\r\n"
-"Arguments: SQL statement/q comannd line options."
+"Arguments: SQL statement/q command line options."
 msgstr ""
 "Consultor CSV con el comando q. \r\n"
 "Argumentos: Sentencia SQL u opciones de línea de comandos pasadas al comando q."
 
 msgid ""
 "TSV Querier (q).\r\n"
-"Arguments: SQL statement/q comannd line options."
+"Arguments: SQL statement/q command line options."
 msgstr ""
 "Consultor TSV con el comando q. \r\n"
 "Argumentos: Sentencia SQL u opciones de línea de comandos pasadas al comando q."
@@ -5552,6 +5609,9 @@ msgid ""
 msgstr ""
 "Validador HTML con tidy-html5. \r\n"
 "Argumentos: Opciones de la línea de comandos pasadas al comando tidy."
+
+msgid "PO Validator (gettext msgfmt).\r\nArguments: msgfmt command line options."
+msgstr ""
 
 msgid ""
 "JVM bytecode disassembler (javap).\r\n"
@@ -5644,6 +5704,9 @@ msgstr ""
 msgid "Unescape and display escaped Java properties files."
 msgstr "Desescapar y mostrar archivos de propiedades Java escapados."
 
+msgid "Java decompiler (CFR).\r\nDecompiles .class files into readable Java source code.\r\nArguments: CFR command line options."
+msgstr ""
+
 msgid "CompareMSExcelFiles.sct WinMerge Plugin Options"
 msgstr "Opciones del complemento WinMerge CompareMSExcelFiles.sct"
 
@@ -5689,6 +5752,9 @@ msgstr ""
 "   La función Confiar en el acceso al proyecto de Visual Basic debe estar activada para utilizar esta función en WinMerge."
 
 msgid "Replace line breaks in formulas with spaces"
+msgstr ""
+
+msgid "Include sheet order number in filename"
 msgstr ""
 
 msgid "Compare VBA macros"

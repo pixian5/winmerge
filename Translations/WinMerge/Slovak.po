@@ -963,6 +963,9 @@ msgstr "&Oba"
 msgid "&All"
 msgstr "&Všetky"
 
+msgid "&Selection"
+msgstr "&výber"
+
 msgid "Re&name"
 msgstr "Pre&menovať"
 
@@ -1637,6 +1640,9 @@ msgstr ""
 msgid "Normalized &Unicode Name"
 msgstr ""
 
+msgid "&Relative Path"
+msgstr ""
+
 msgid "&Date"
 msgstr ""
 
@@ -1648,6 +1654,30 @@ msgstr ""
 
 msgid "Insert rege&xReplace() Function"
 msgstr ""
+
+msgid "Replace &Lists"
+msgstr ""
+
+msgid "&Create String Replace List and Insert..."
+msgstr ""
+
+msgid "Create &Regex Replace List and Insert..."
+msgstr ""
+
+msgid "&String Replace Lists"
+msgstr ""
+
+msgid "Re&gex Replace Lists"
+msgstr ""
+
+msgid "Open String Replace Lists Folder..."
+msgstr ""
+
+msgid "Open Regex Replace Lists Folder..."
+msgstr ""
+
+msgid "Match &case"
+msgstr "Rozlišovať &veľké/malé"
 
 msgid "Text &Normalization"
 msgstr ""
@@ -1680,6 +1710,9 @@ msgid "&Hiragana"
 msgstr ""
 
 msgid "&Katakana"
+msgstr ""
+
+msgid "Normalize &Unicode"
 msgstr ""
 
 msgid "About WinMerge"
@@ -1769,9 +1802,6 @@ msgstr "&Hľadať:"
 msgid "Match &whole word only"
 msgstr "Iba celé &slová"
 
-msgid "Match &case"
-msgstr "Rozlišovať &veľké/malé"
-
 msgid "Regular &expression"
 msgstr "&Regulárny výraz"
 
@@ -1798,9 +1828,6 @@ msgstr "&Nezalamovať koniec súboru"
 
 msgid "Replace in"
 msgstr "Nahradiť v"
-
-msgid "&Selection"
-msgstr "&výber"
 
 msgid "Wh&ole file"
 msgstr "&celý súbor"
@@ -2699,7 +2726,7 @@ msgstr ""
 msgid "Rename/move detection &keys:"
 msgstr ""
 
-msgid "&Merge renamed items into a single item"
+msgid "M&erge renames and moves:"
 msgstr ""
 
 msgid "File patterns:"
@@ -3010,9 +3037,6 @@ msgstr "Na stred:"
 msgid "Version %1"
 msgstr "Verzia %1"
 
-msgid "X64"
-msgstr "X64 - Slovenský preklad"
-
 #, c-format
 msgid "Options (%1)"
 msgstr "Vlastnosti (%1)"
@@ -3041,6 +3065,9 @@ msgstr "WinMerge projekty (*.WinMerge)|*.WinMerge||"
 
 msgid "Options files (*.ini)|*.ini|All Files (*.*)|*.*||"
 msgstr "Súbory s nastavením (*.ini)|*.ini|Všetky súbory (*.*)|*.*||"
+
+msgid "Tab-Separated Values (*.tsv;*.txt)|*.tsv;*.txt|All Files (*.*)|*.*||"
+msgstr ""
 
 msgid "Text Files (*.csv;*.asc;*.rpt;*.txt)|*.csv;*.asc;*.rpt;*.txt|All Files (*.*)|*.*||"
 msgstr "Textové súbory (*.csv;*.asc;*.rpt;*.txt)|*.csv;*.asc;*.rpt;*.txt|Všetky súbory (*.*)|*.*||"
@@ -3903,6 +3930,9 @@ msgstr " (Ľavý a pravý sú identické)"
 msgid " (Left and middle are identical)"
 msgstr " (Ľavý a stredný sú identické)"
 
+msgid " (paths differ)"
+msgstr ""
+
 msgid "Text files are different"
 msgstr "Textové súbory sú rozdielne"
 
@@ -3930,6 +3960,12 @@ msgstr ""
 msgid "Detect renames and moves"
 msgstr ""
 
+msgid "Merge renames"
+msgstr ""
+
+msgid "Merge renames and moves"
+msgstr ""
+
 msgid "Renamed"
 msgstr ""
 
@@ -3945,6 +3981,9 @@ msgstr ""
 
 #, c-format
 msgid "%1 (set %2): "
+msgstr ""
+
+msgid "Some moved items have been merged.\nIn Tree Mode, these items may appear in positions that do not reflect the actual folder structure, which can be confusing.\nSwitch to Flat Mode?"
 msgstr ""
 
 #, c-format
@@ -5103,6 +5142,12 @@ msgstr ""
 msgid "WinMerge detected a previous crash. Please report this if possible."
 msgstr ""
 
+msgid "# Regex replacement list\r\n# Format: regex<TAB>replacement\r\n# Backreferences like $1, $2 are supported\r\n\r\n(\\d{4})-(\\d{2})-(\\d{2})\t$1_$2_$3\r\n"
+msgstr ""
+
+msgid "# Replacement list\r\n# Format: search<TAB>replacement\r\n# Lines starting with # are ignored\r\n\r\nfrom1\tto1\r\nfrom2\tto2\r\n"
+msgstr ""
+
 msgid "Prettification"
 msgstr "Prikrášlenie"
 
@@ -5208,6 +5253,9 @@ msgstr "Skrášliť XML"
 msgid "Prettify YAML"
 msgstr "Skrášliť YAML"
 
+msgid "Prettify PO"
+msgstr ""
+
 msgid "Preview Graphviz"
 msgstr ""
 
@@ -5232,6 +5280,9 @@ msgstr "Vyhľadávanie údajov YAML..."
 msgid "Validate HTML"
 msgstr "Overenie HTML"
 
+msgid "Validate PO"
+msgstr ""
+
 msgid "Disassemble JVM Bytecode"
 msgstr "Rozloženie bytového JVM kódu"
 
@@ -5245,6 +5296,9 @@ msgid "Convert Text with AI..."
 msgstr ""
 
 msgid "Unescape Java properties files"
+msgstr ""
+
+msgid "Decompile Java (CFR)"
 msgstr ""
 
 msgid "Make characters uppercase"
@@ -5372,6 +5426,9 @@ msgstr ""
 "YAML skrášlené príkazom yq\r\n"
 "Argumenty: Možnosti filtra alebo príkazového riadka odovzdané príkazu yq."
 
+msgid "PO Prettier (gettext msgcat).\r\nArguments: msgcat command line options."
+msgstr ""
+
 msgid "Graphviz Previewer.\r\nArguments: dot command line options."
 msgstr ""
 
@@ -5383,14 +5440,14 @@ msgstr ""
 
 msgid ""
 "CSV Querier (q).\r\n"
-"Arguments: SQL statement/q comannd line options."
+"Arguments: SQL statement/q command line options."
 msgstr ""
 "CSV dopyt príkazom q\r\n"
 "Argumenty: Príkaz SQL alebo možnosti príkazového riadka odovzdané príkazu q."
 
 msgid ""
 "TSV Querier (q).\r\n"
-"Arguments: SQL statement/q comannd line options."
+"Arguments: SQL statement/q command line options."
 msgstr ""
 "TSV dopyt príkazom q\r\n"
 "Argumenty: SQL príkaz alebo možnosti príkazového riadka odovzdané príkazu q."
@@ -5415,6 +5472,9 @@ msgid ""
 msgstr ""
 "Validátor HTML s tidy-html5\r\n"
 "Argumenty: Možnosti príkazového riadku odovzdané príkazu tidy."
+
+msgid "PO Validator (gettext msgfmt).\r\nArguments: msgfmt command line options."
+msgstr ""
 
 msgid ""
 "JVM bytecode disassembler (javap).\r\n"
@@ -5495,6 +5555,9 @@ msgstr ""
 msgid "Unescape and display escaped Java properties files."
 msgstr ""
 
+msgid "Java decompiler (CFR).\r\nDecompiles .class files into readable Java source code.\r\nArguments: CFR command line options."
+msgstr ""
+
 msgid "CompareMSExcelFiles.sct WinMerge Plugin Options"
 msgstr ""
 
@@ -5535,6 +5598,9 @@ msgid "Cannot get Macros.\r\nEnable 'Trust access to Visual Basic Project' in MS
 msgstr ""
 
 msgid "Replace line breaks in formulas with spaces"
+msgstr ""
+
+msgid "Include sheet order number in filename"
 msgstr ""
 
 msgid "Compare VBA macros"
