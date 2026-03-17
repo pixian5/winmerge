@@ -213,10 +213,7 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
                                              code:kWMDiffErrorMissingFile
                                          userInfo:@{ NSLocalizedDescriptionKey :
                                                      [NSString stringWithFormat:@"One or both files do not exist:\n%@\n%@", leftPath, rightPath]}];
-        BOOL presented = [self presentError:error];
-        if (!presented) {
-            self.statusLabel.stringValue = error.localizedDescription ?: @"Unable to display error";
-        }
+        [self displayComparisonError:error];
         return NO;
     }
 
@@ -226,10 +223,7 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
                                              code:kWMDiffErrorFolderUnsupported
                                          userInfo:@{ NSLocalizedDescriptionKey :
                                                      @"Folder comparison is not yet available on macOS. Please select two files." }];
-        BOOL presented = [self presentError:error];
-        if (!presented) {
-            self.statusLabel.stringValue = error.localizedDescription ?: @"Unable to display error";
-        }
+        [self displayComparisonError:error];
         return NO;
     }
 
@@ -448,13 +442,20 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     if (window) {
         NSAlert *alert = [[NSAlert alloc] init];
         alert.messageText = @"Cannot compare selection";
-        alert.informativeText = error.localizedDescription ?: @"";
+        alert.informativeText = error.localizedDescription ?: @"Unknown error";
         [alert addButtonWithTitle:@"OK"];
         [alert beginSheetModalForWindow:window completionHandler:nil];
         return YES;
     }
 
     return [NSApp presentError:error];
+}
+
+- (void)displayComparisonError:(NSError *)error {
+    if (!error) return;
+    if (![self presentError:error]) {
+        self.statusLabel.stringValue = error.localizedDescription ?: @"Unknown error";
+    }
 }
 
 #pragma mark - File Operations
