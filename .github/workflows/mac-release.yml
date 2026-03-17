@@ -2,7 +2,6 @@ name: Mac Release
 
 on:
   push:
-    branches: [ master ]
   workflow_dispatch:
 
 permissions:
@@ -24,26 +23,19 @@ jobs:
 
           # Generate timestamp-based version: YYMMDDHHMI (e.g., 2603180101)
           version="$(date -u '+%y%m%d%H%M')"
-          tag="v${version}"
-
           git fetch --force --tags
 
-          # Check if this exact version tag already exists
-          if git rev-parse "${tag}" >/dev/null 2>&1; then
-            echo "release_exists=true" >> "${GITHUB_OUTPUT}"
-            echo "version=${version}" >> "${GITHUB_OUTPUT}"
-            echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
-            echo "Version ${tag} already exists; skipping build."
-            exit 0
-          fi
+          # Ensure each code change can publish even if two runs start in the same minute.
+          # Keep required version format YYMMDDHHMI by moving forward minute-by-minute until unused.
+          while git rev-parse "v${version}" >/dev/null 2>&1; do
+            version="$(date -u -j -v+1M -f '%y%m%d%H%M' "${version}" '+%y%m%d%H%M')"
+          done
 
           echo "version=${version}" >> "${GITHUB_OUTPUT}"
-          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
-          echo "release_exists=false" >> "${GITHUB_OUTPUT}"
+          echo "tag=v${version}" >> "${GITHUB_OUTPUT}"
           echo "Resolved macOS release version: ${version}"
 
       - name: Build macOS release artifact
-        if: steps.version.outputs.release_exists != 'true'
         env:
           MAC_VERSION: ${{ steps.version.outputs.version }}
         run: |
@@ -51,14 +43,12 @@ jobs:
           ./mac/build-mac.sh --version "${MAC_VERSION}"
 
       - name: Upload build artifact to workflow run
-        if: steps.version.outputs.release_exists != 'true'
         uses: actions/upload-artifact@v4.6.0
         with:
           name: WinMerge-macOS-${{ steps.version.outputs.version }}.zip
           path: mac/dist/WinMerge-macOS-${{ steps.version.outputs.version }}.zip
 
       - name: Create GitHub release
-        if: steps.version.outputs.release_exists != 'true'
         uses: softprops/action-gh-release@v2.0.0
         with:
           tag_name: ${{ steps.version.outputs.tag }}

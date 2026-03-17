@@ -9,7 +9,7 @@
 @implementation LineNumberRulerView
 
 - (instancetype)initWithScrollView:(NSScrollView *)scrollView {
-    self = [super initWithScrollView:scrollView orientation:NSRulerViewOrientationVertical];
+    self = [super initWithScrollView:scrollView orientation:NSVerticalRuler];
     if (self) {
         self.clientView = scrollView.documentView;
         self.ruleThickness = 40.0;
