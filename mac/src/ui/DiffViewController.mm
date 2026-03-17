@@ -205,13 +205,21 @@
     auto rightExists = wm::FileOps::fileExists(rightPath.UTF8String);
 
     if (!leftExists || !rightExists) {
-        [self presentError:[NSString stringWithFormat:@"One or both files do not exist:\n%@\n%@", leftPath, rightPath]];
+        NSError *error = [NSError errorWithDomain:@"org.winmerge.mac"
+                                             code:1
+                                         userInfo:@{ NSLocalizedDescriptionKey :
+                                                     [NSString stringWithFormat:@"One or both files do not exist:\n%@\n%@", leftPath, rightPath]}];
+        [self presentError:error];
         return NO;
     }
 
     if (wm::FileOps::isDirectory(leftPath.UTF8String) ||
         wm::FileOps::isDirectory(rightPath.UTF8String)) {
-        [self presentError:@"Folder comparison is not yet available on macOS. Please select two files."];
+        NSError *error = [NSError errorWithDomain:@"org.winmerge.mac"
+                                             code:2
+                                         userInfo:@{ NSLocalizedDescriptionKey :
+                                                     @"Folder comparison is not yet available on macOS. Please select two files." }];
+        [self presentError:error];
         return NO;
     }
 
@@ -418,14 +426,18 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+#if !__has_feature(objc_arc)
+    [super dealloc];
+#endif
 }
 
-- (void)presentError:(NSString *)message {
+- (BOOL)presentError:(NSError *)error {
     NSAlert *alert = [[NSAlert alloc] init];
     alert.messageText = @"Cannot compare selection";
-    alert.informativeText = message ?: @"Unknown error";
+    alert.informativeText = error.localizedDescription ?: @"Unknown error";
     [alert addButtonWithTitle:@"OK"];
     [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
+    return YES;
 }
 
 #pragma mark - File Operations
