@@ -12,7 +12,7 @@ set(WM_VERSION "0.0.1" CACHE STRING "WinMerge macOS bundle version (semantic or 
 if(WM_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
     # Semantic version format
     project(WinMerge VERSION ${WM_VERSION} LANGUAGES C CXX OBJCXX)
-elseif(WM_VERSION MATCHES "^[0-9]{10}$")
+elseif(WM_VERSION MATCHES "^[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]$")
     # Timestamp format (YYMMDDHHMI) - use as bundle version string
     # For CMake project(), we need to convert to semantic format for compatibility
     # Extract YY, MM, DD, HH, MI and create a pseudo-semantic version
