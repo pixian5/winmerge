@@ -213,7 +213,10 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
                                              code:kWMDiffErrorMissingFile
                                          userInfo:@{ NSLocalizedDescriptionKey :
                                                      [NSString stringWithFormat:@"One or both files do not exist:\n%@\n%@", leftPath, rightPath]}];
-        [self presentError:error];
+        BOOL presented = [self presentError:error];
+        if (!presented) {
+            self.statusLabel.stringValue = error.localizedDescription ?: @"Unable to display error";
+        }
         return NO;
     }
 
@@ -223,7 +226,10 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
                                              code:kWMDiffErrorFolderUnsupported
                                          userInfo:@{ NSLocalizedDescriptionKey :
                                                      @"Folder comparison is not yet available on macOS. Please select two files." }];
-        [self presentError:error];
+        BOOL presented = [self presentError:error];
+        if (!presented) {
+            self.statusLabel.stringValue = error.localizedDescription ?: @"Unable to display error";
+        }
         return NO;
     }
 
@@ -442,7 +448,7 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     if (window) {
         NSAlert *alert = [[NSAlert alloc] init];
         alert.messageText = @"Cannot compare selection";
-        alert.informativeText = error.localizedDescription ?: @"Unknown error";
+        alert.informativeText = error.localizedDescription ?: @"";
         [alert addButtonWithTitle:@"OK"];
         [alert beginSheetModalForWindow:window completionHandler:nil];
         return YES;
