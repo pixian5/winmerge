@@ -9,7 +9,7 @@ VERSION_FILE="${SCRIPT_DIR}/VERSION"
 
 usage() {
   cat <<'EOF'
-Usage: mac/build-mac.sh [--release] [--version <x.y.z>]
+Usage: mac/build-mac.sh [--release] [--version <version>]
 
 Builds the macOS WinMerge app bundle (Release configuration), then packages it
 as a zip ready to upload to GitHub Releases.
@@ -17,6 +17,7 @@ as a zip ready to upload to GitHub Releases.
 Options:
   --release         Build and package, then bump VERSION by 0.0.1 for the next release.
   --version <v>     Override the version string for this build (default reads mac/VERSION).
+                    Supports semantic versions (x.y.z) or timestamp format (YYMMDDHHMI).
   -h, --help        Show this help.
 
 Notes:
@@ -88,20 +89,26 @@ echo "==> Packaging ${APP_PATH} -> ${ARCHIVE_PATH}"
 ditto -c -k --sequesterRsrc --keepParent "${APP_PATH}" "${ARCHIVE_PATH}"
 
 if [[ ${RELEASE_MODE} -eq 1 ]]; then
-  if [[ ! "${VERSION_TO_BUILD}" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-    echo "Version must match <major>.<minor>.<patch>, got '${VERSION_TO_BUILD}'" >&2
+  # Check if version is semantic (x.y.z) or timestamp (YYMMDDHHMI)
+  if [[ "${VERSION_TO_BUILD}" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+    # Semantic version format
+    major="${BASH_REMATCH[1]}"
+    minor="${BASH_REMATCH[2]}"
+    patch="${BASH_REMATCH[3]}"
+
+    # Use base-10 prefix so numeric components are always treated as decimal (even if a component has leading zeros).
+    major_num=$((10#${major}))
+    minor_num=$((10#${minor}))
+    patch_num=$((10#${patch}))
+    next_patch=$((patch_num + 1))
+    NEXT_VERSION="${major_num}.${minor_num}.${next_patch}"
+  elif [[ "${VERSION_TO_BUILD}" =~ ^[0-9]{10}$ ]]; then
+    # Timestamp format (YYMMDDHHMI) - generate new timestamp
+    NEXT_VERSION="$(date -u '+%y%m%d%H%M')"
+  else
+    echo "Version must match <major>.<minor>.<patch> or YYMMDDHHMI format, got '${VERSION_TO_BUILD}'" >&2
     exit 1
   fi
-  major="${BASH_REMATCH[1]}"
-  minor="${BASH_REMATCH[2]}"
-  patch="${BASH_REMATCH[3]}"
-
-  # Use base-10 prefix so numeric components are always treated as decimal (even if a component has leading zeros).
-  major_num=$((10#${major}))
-  minor_num=$((10#${minor}))
-  patch_num=$((10#${patch}))
-  next_patch=$((patch_num + 1))
-  NEXT_VERSION="${major_num}.${minor_num}.${next_patch}"
   echo "${NEXT_VERSION}" > "${VERSION_FILE}"
   echo "==> Release artifact ready: ${ARCHIVE_PATH}"
   echo "    Upload to GitHub Releases using tag \"v${VERSION_TO_BUILD}\" (per mac/README.md), then next version set to ${NEXT_VERSION}"

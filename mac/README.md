@@ -55,10 +55,12 @@ brew install cmake
 
 ```bash
 ./mac/build-mac.sh           # build Release and produce dist/WinMerge-macOS-<version>.zip
-./mac/build-mac.sh --release # build, package, then bump mac/VERSION by +0.0.1 for the next release
+./mac/build-mac.sh --version 2603180101  # build with specific timestamp version
+./mac/build-mac.sh --release # build, package, then bump mac/VERSION for the next release
 ```
 
-- Version is read from `mac/VERSION` (initially `0.0.1`); each release increments the patch version (e.g., `0.0.1 → 0.0.2`).
+- Version can be semantic (e.g., `0.0.1`) or timestamp format (e.g., `2603180101` for 2026-03-18 01:01).
+- Default version is read from `mac/VERSION`; pass `--version` to override.
 - Output artifacts are placed in `mac/dist/`.
 
 ### Manual CMake build
@@ -66,7 +68,7 @@ brew install cmake
 ```bash
 cd mac
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release -DWM_VERSION=2603180101
 cmake --build .
 ```
 
@@ -91,14 +93,14 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 
 **Release policy**
 
-- After every mac-related code change, produce and publish a macOS build.
-- Versioning starts at `0.0.1`; each new release increments by `+0.0.1`. Use `./mac/build-mac.sh --release` to package the app and automatically bump `mac/VERSION` for the next publish.
-- CI automation (`.github/workflows/mac-release.yml`) builds and publishes a macOS release on every push to `master`, deriving sequential `v0.x.x` tags for each new release.
+- After every code change to master branch, CI automatically builds and publishes a macOS release.
+- Versioning uses timestamp format `YYMMDDHHMI` (e.g., `2603180101` for 2026-03-18 01:01) to ensure unique versions for each build.
+- CI automation (`.github/workflows/mac-release.yml`) builds and publishes a macOS release on every push to `master`, creating tags like `v2603180101`.
 
-1. Make your code changes on macOS.
-2. Run `./mac/build-mac.sh --release` to build and produce `mac/dist/WinMerge-macOS-<version>.zip`.
-3. Create a GitHub Release tagged `v<version>` (starting at `v0.0.1`, then `v0.0.2`, etc.) and upload the zip from `mac/dist/`.
-4. The script automatically bumps `mac/VERSION` to the next patch version (e.g., `0.0.1 → 0.0.2`) to prepare for the next release.
+1. Push your code changes to the `master` branch.
+2. GitHub Actions automatically builds the macOS release with a timestamp-based version.
+3. The workflow creates a GitHub Release tagged `v<timestamp>` (e.g., `v2603180101`) and uploads the zip artifact.
+4. Manual builds: Run `./mac/build-mac.sh --version <timestamp>` to build locally with a specific version.
 
 ## Features
 

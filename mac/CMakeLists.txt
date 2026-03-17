@@ -6,11 +6,27 @@ if(NOT APPLE)
 endif()
 
 # Default matches mac/VERSION; build-mac.sh passes -DWM_VERSION to override on release builds.
-set(WM_VERSION "0.0.1" CACHE STRING "WinMerge macOS bundle version (semantic version string)")
-if(NOT WM_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
-    message(FATAL_ERROR "WM_VERSION must be numeric <major>.<minor>.<patch>, e.g., 0.0.1")
+set(WM_VERSION "0.0.1" CACHE STRING "WinMerge macOS bundle version (semantic or timestamp format)")
+
+# Support both semantic version (x.y.z) and timestamp (YYMMDDHHMI) formats
+if(WM_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
+    # Semantic version format
+    project(WinMerge VERSION ${WM_VERSION} LANGUAGES C CXX OBJCXX)
+elseif(WM_VERSION MATCHES "^[0-9]{10}$")
+    # Timestamp format (YYMMDDHHMI) - use as bundle version string
+    # For CMake project(), we need to convert to semantic format for compatibility
+    # Extract YY, MM, DD, HH, MI and create a pseudo-semantic version
+    string(SUBSTRING ${WM_VERSION} 0 2 YY)
+    string(SUBSTRING ${WM_VERSION} 2 2 MM)
+    string(SUBSTRING ${WM_VERSION} 4 2 DD)
+    # Create semantic version like YY.MMDD.HHMI for CMake project() compatibility
+    string(SUBSTRING ${WM_VERSION} 4 6 MINOR_PATCH)
+    project(WinMerge VERSION ${YY}.${MM}.${DD} LANGUAGES C CXX OBJCXX)
+    # Override with actual timestamp for bundle version
+    set(PROJECT_VERSION ${WM_VERSION})
+else()
+    message(FATAL_ERROR "WM_VERSION must be semantic <major>.<minor>.<patch> (e.g., 0.0.1) or timestamp YYMMDDHHMI (e.g., 2603180101)")
 endif()
-project(WinMerge VERSION ${WM_VERSION} LANGUAGES C CXX OBJCXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
