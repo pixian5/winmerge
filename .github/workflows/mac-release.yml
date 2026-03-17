@@ -1,0 +1,94 @@
+name: Mac Release
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          submodules: recursive
+
+      - name: Determine next macOS version
+        id: version
+        run: |
+          set -euo pipefail
+
+          git fetch --force --tags
+
+          existing_tag_for_head="$(git tag --points-at HEAD 'v0.*.*' | head -n 1)"
+          if [[ -n "${existing_tag_for_head}" ]]; then
+            resolved_version="${existing_tag_for_head#v}"
+            echo "release_exists=true" >> "${GITHUB_OUTPUT}"
+            echo "version=${resolved_version}" >> "${GITHUB_OUTPUT}"
+            echo "tag=${existing_tag_for_head}" >> "${GITHUB_OUTPUT}"
+            echo "HEAD already released as ${existing_tag_for_head}; skipping build."
+            exit 0
+          fi
+
+          latest_tag="$(git tag -l 'v0.*.*' --sort=-v:refname | head -n 1)"
+          if [[ -z "${latest_tag}" ]]; then
+            base_version="0.0.0"
+          else
+            base_version="${latest_tag#v}"
+          fi
+
+          if [[ ! "${base_version}" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            echo "Latest macOS version tag must match v<major>.<minor>.<patch>, got '${base_version}'" >&2
+            exit 1
+          fi
+
+          major="${BASH_REMATCH[1]}"
+          minor="${BASH_REMATCH[2]}"
+          patch="${BASH_REMATCH[3]}"
+
+          if [[ -z "${latest_tag}" ]]; then
+            next_version="0.0.1"
+          else
+            next_patch=$((10#${patch} + 1))
+            next_version="${major}.${minor}.${next_patch}"
+          fi
+
+          echo "version=${next_version}" >> "${GITHUB_OUTPUT}"
+          echo "tag=v${next_version}" >> "${GITHUB_OUTPUT}"
+          echo "release_exists=false" >> "${GITHUB_OUTPUT}"
+          echo "Resolved next macOS release version: ${next_version}"
+
+      - name: Build macOS release artifact
+        if: steps.version.outputs.release_exists != 'true'
+        env:
+          MAC_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          ./mac/build-mac.sh --version "${MAC_VERSION}"
+
+      - name: Upload build artifact to workflow run
+        if: steps.version.outputs.release_exists != 'true'
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: WinMerge-macOS-${{ steps.version.outputs.version }}.zip
+          path: mac/dist/WinMerge-macOS-${{ steps.version.outputs.version }}.zip
+
+      - name: Create GitHub release
+        if: steps.version.outputs.release_exists != 'true'
+        uses: softprops/action-gh-release@v2.0.0
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: WinMerge macOS ${{ steps.version.outputs.version }}
+          body: |
+            Automated macOS build for commit ${{ github.sha }}.
+          files: mac/dist/WinMerge-macOS-${{ steps.version.outputs.version }}.zip
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
