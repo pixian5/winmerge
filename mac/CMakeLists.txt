@@ -5,7 +5,12 @@ if(NOT APPLE)
     message(FATAL_ERROR "The mac/ port builds only on macOS with the Apple Objective-C++ toolchain. Use the platform-appropriate build (e.g., Windows via Visual Studio) on other systems.")
 endif()
 
-project(WinMerge VERSION 0.1.0 LANGUAGES C CXX OBJCXX)
+# Default matches mac/VERSION; build-mac.sh passes -DWM_VERSION to override on release builds.
+set(WM_VERSION "0.0.1" CACHE STRING "WinMerge macOS bundle version (semantic version string)")
+if(NOT WM_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
+    message(FATAL_ERROR "WM_VERSION must be numeric <major>.<minor>.<patch>, e.g., 0.0.1")
+endif()
+project(WinMerge VERSION ${WM_VERSION} LANGUAGES C CXX OBJCXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -58,8 +63,10 @@ target_link_libraries(WinMerge PRIVATE
     "-framework UniformTypeIdentifiers"
 )
 
+configure_file("${CMAKE_SOURCE_DIR}/resources/Info.plist.in" "${CMAKE_CURRENT_BINARY_DIR}/Info.plist" @ONLY)
+
 set_target_properties(WinMerge PROPERTIES
     MACOSX_BUNDLE TRUE
-    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/resources/Info.plist"
+    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist"
     XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS "${CMAKE_SOURCE_DIR}/resources/WinMerge.entitlements"
 )

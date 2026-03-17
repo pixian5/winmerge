@@ -134,3 +134,5 @@ Src/dlldata.c
 unittest-cppcheck-build-dir/
 Src/FilterEngine/FilterLexer.cpp
 Src/FilterEngine/FilterParser.c
+mac/build/
+mac/dist/

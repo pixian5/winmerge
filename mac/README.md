@@ -51,10 +51,22 @@ brew install cmake
 
 ## Building
 
+### One-shot build + package (recommended)
+
+```bash
+./mac/build-mac.sh           # build Release and produce dist/WinMerge-macOS-<version>.zip
+./mac/build-mac.sh --release # build, package, then bump mac/VERSION by +0.0.1 for the next release
+```
+
+- Version is read from `mac/VERSION` (initially `0.0.1`); each release increments the patch version (e.g., `0.0.1 → 0.0.2`).
+- Output artifacts are placed in `mac/dist/`.
+
+### Manual CMake build
+
 ```bash
 cd mac
 mkdir build && cd build
-cmake ..
+cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 ```
 
@@ -74,6 +86,13 @@ Or compare files from the command line:
 ```bash
 build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 ```
+
+## Releasing builds
+
+1. Make your code changes on macOS.
+2. Run `./mac/build-mac.sh --release` to build and produce `mac/dist/WinMerge-macOS-<version>.zip`.
+3. Create a GitHub Release tagged `v<version>` (starting at `v0.0.1`, then `v0.0.2`, etc.) and upload the zip from `mac/dist/`.
+4. The script automatically bumps `mac/VERSION` to the next patch version (e.g., `0.0.1 → 0.0.2`) to prepare for the next release.
 
 ## Features
 
