@@ -320,11 +320,11 @@ static const NSInteger kWMDiffErrorPathTypeMismatch = 2;
         if (bgColor) attrs[NSBackgroundColorAttributeName] = bgColor;
 
         if (item.op == wm::DiffOp::Added) {
-            [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:defaultAttrs]];
+            [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:@" \n" attributes:defaultAttrs]];
             [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
         } else if (item.op == wm::DiffOp::Removed) {
             [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
-            [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n" attributes:defaultAttrs]];
+            [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:@" \n" attributes:defaultAttrs]];
         } else {
             [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
             [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
