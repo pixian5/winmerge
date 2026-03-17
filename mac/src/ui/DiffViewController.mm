@@ -11,6 +11,10 @@
 #include "FileOperations.h"
 #include <memory>
 
+static NSString * const kWMDiffErrorDomain = @"org.winmerge.mac";
+static const NSInteger kWMDiffErrorMissingFile = 1;
+static const NSInteger kWMDiffErrorFolderUnsupported = 2;
+
 @interface DiffViewController ()
 @property (assign, nonatomic) int currentDiffIndex;
 @property (assign, nonatomic) int totalDiffs;
@@ -205,8 +209,8 @@
     auto rightExists = wm::FileOps::fileExists(rightPath.UTF8String);
 
     if (!leftExists || !rightExists) {
-        NSError *error = [NSError errorWithDomain:@"org.winmerge.mac"
-                                             code:1
+        NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
+                                             code:kWMDiffErrorMissingFile
                                          userInfo:@{ NSLocalizedDescriptionKey :
                                                      [NSString stringWithFormat:@"One or both files do not exist:\n%@\n%@", leftPath, rightPath]}];
         [self presentError:error];
@@ -215,8 +219,8 @@
 
     if (wm::FileOps::isDirectory(leftPath.UTF8String) ||
         wm::FileOps::isDirectory(rightPath.UTF8String)) {
-        NSError *error = [NSError errorWithDomain:@"org.winmerge.mac"
-                                             code:2
+        NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
+                                             code:kWMDiffErrorFolderUnsupported
                                          userInfo:@{ NSLocalizedDescriptionKey :
                                                      @"Folder comparison is not yet available on macOS. Please select two files." }];
         [self presentError:error];
@@ -432,12 +436,19 @@
 }
 
 - (BOOL)presentError:(NSError *)error {
-    NSAlert *alert = [[NSAlert alloc] init];
-    alert.messageText = @"Cannot compare selection";
-    alert.informativeText = error.localizedDescription ?: @"Unknown error";
-    [alert addButtonWithTitle:@"OK"];
-    [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
-    return YES;
+    if (!error) return NO;
+
+    NSWindow *window = self.view.window;
+    if (window) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        alert.messageText = @"Cannot compare selection";
+        alert.informativeText = error.localizedDescription ?: @"Unknown error";
+        [alert addButtonWithTitle:@"OK"];
+        [alert beginSheetModalForWindow:window completionHandler:nil];
+        return YES;
+    }
+
+    return [NSApp presentError:error];
 }
 
 #pragma mark - File Operations
