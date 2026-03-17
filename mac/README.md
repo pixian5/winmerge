@@ -110,6 +110,8 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 - Navigation between differences (⌘↑ / ⌘↓)
 - File open dialog for selecting files to compare
 - Support for multiple diff algorithms (Myers, Patience, Histogram)
+- Algorithm selection (Myers, Minimal, Patience, Histogram) from the UI
+- Ignore options: whitespace, whitespace changes, blank lines, and case
 - Whitespace comparison options
 
 ### Not Included (macOS limitations / intentionally removed)

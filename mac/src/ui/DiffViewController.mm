@@ -13,10 +13,18 @@
 @interface DiffViewController ()
 @property (assign, nonatomic) int currentDiffIndex;
 @property (assign, nonatomic) int totalDiffs;
+@property (strong, nonatomic) NSButton *ignoreWhitespaceButton;
+@property (strong, nonatomic) NSButton *ignoreWhitespaceChangeButton;
+@property (strong, nonatomic) NSButton *ignoreBlankLinesButton;
+@property (strong, nonatomic) NSButton *ignoreCaseButton;
+@property (strong, nonatomic) NSPopUpButton *algorithmPopup;
+@property (copy, nonatomic) NSString *currentLeftPath;
+@property (copy, nonatomic) NSString *currentRightPath;
 @end
 
 @implementation DiffViewController {
     std::unique_ptr<wm::DiffResult> _diffResult;
+    wm::DiffOptions _options;
 }
 
 - (void)loadView {
@@ -56,12 +64,14 @@
     NSStackView *headerStack = [NSStackView stackViewWithViews:@[leftHeader, rightHeader]];
     headerStack.distribution = NSStackViewDistributionFillEqually;
 
+    NSView *optionsBar = [self buildOptionsBar];
+
     // Status bar
     NSStackView *statusBar = [NSStackView stackViewWithViews:@[self.statusLabel]];
     statusBar.edgeInsets = NSEdgeInsetsMake(2, 8, 2, 8);
 
     // Main vertical stack
-    NSStackView *mainStack = [NSStackView stackViewWithViews:@[headerStack, splitView, statusBar]];
+    NSStackView *mainStack = [NSStackView stackViewWithViews:@[headerStack, optionsBar, splitView, statusBar]];
     mainStack.orientation = NSUserInterfaceLayoutOrientationVertical;
     mainStack.spacing = 0;
     mainStack.translatesAutoresizingMaskIntoConstraints = NO;
@@ -79,7 +89,43 @@
     [mainStack setHuggingPriority:NSLayoutPriorityDefaultLow
                    forOrientation:NSLayoutConstraintOrientationVertical];
     [splitView setContentHuggingPriority:NSLayoutPriorityDefaultLow
-                          forOrientation:NSLayoutConstraintOrientationVertical];
+                           forOrientation:NSLayoutConstraintOrientationVertical];
+}
+
+- (NSView *)buildOptionsBar {
+    self.ignoreWhitespaceButton = [self checkboxWithTitle:@"Ignore whitespace"
+                                                   action:@selector(optionToggleChanged:)];
+    self.ignoreWhitespaceChangeButton = [self checkboxWithTitle:@"Ignore whitespace changes"
+                                                         action:@selector(optionToggleChanged:)];
+    self.ignoreBlankLinesButton = [self checkboxWithTitle:@"Ignore blank lines"
+                                                   action:@selector(optionToggleChanged:)];
+    self.ignoreCaseButton = [self checkboxWithTitle:@"Ignore case"
+                                             action:@selector(optionToggleChanged:)];
+
+    self.algorithmPopup = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+    [self.algorithmPopup addItemsWithTitles:@[@"Myers (Default)", @"Minimal", @"Patience", @"Histogram"]];
+    self.algorithmPopup.target = self;
+    self.algorithmPopup.action = @selector(algorithmChanged:);
+
+    NSStackView *optionsStack = [NSStackView stackViewWithViews:@[
+        self.ignoreWhitespaceButton,
+        self.ignoreWhitespaceChangeButton,
+        self.ignoreBlankLinesButton,
+        self.ignoreCaseButton,
+        self.algorithmPopup
+    ]];
+    optionsStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    optionsStack.spacing = 12;
+    optionsStack.edgeInsets = NSEdgeInsetsMake(4, 8, 4, 8);
+    optionsStack.alignment = NSLayoutAttributeCenterY;
+
+    return optionsStack;
+}
+
+- (NSButton *)checkboxWithTitle:(NSString *)title action:(SEL)action {
+    NSButton *button = [NSButton checkboxWithTitle:title target:self action:action];
+    button.font = [NSFont systemFontOfSize:12];
+    return button;
 }
 
 - (NSTextField *)createLabel:(NSString *)text {
@@ -138,24 +184,70 @@
     self.leftLabel.stringValue = leftPath;
     self.rightLabel.stringValue = rightPath;
 
-    // Run the diff engine
+    self.currentLeftPath = leftPath;
+    self.currentRightPath = rightPath;
+
+    if (![self validatePathsAreFiles:leftPath right:rightPath]) {
+        return;
+    }
+
+    [self runDiffForCurrentPaths];
+}
+
+- (BOOL)validatePathsAreFiles:(NSString *)leftPath right:(NSString *)rightPath {
+    auto leftExists = wm::FileOps::fileExists(leftPath.UTF8String);
+    auto rightExists = wm::FileOps::fileExists(rightPath.UTF8String);
+
+    if (!leftExists || !rightExists) {
+        [self presentError:[NSString stringWithFormat:@"One or both files do not exist:\n%@\n%@", leftPath, rightPath]];
+        return NO;
+    }
+
+    if (wm::FileOps::isDirectory(leftPath.UTF8String) ||
+        wm::FileOps::isDirectory(rightPath.UTF8String)) {
+        [self presentError:@"Folder comparison is not yet available on macOS. Please select two files."];
+        return NO;
+    }
+
+    return YES;
+}
+
+- (void)runDiffForCurrentPaths {
+    if (!self.currentLeftPath || !self.currentRightPath) return;
+
     wm::DiffEngine engine;
+    engine.setOptions(_options);
     _diffResult = std::make_unique<wm::DiffResult>(
-        engine.compareFiles(leftPath.UTF8String, rightPath.UTF8String)
+        engine.compareFiles(self.currentLeftPath.UTF8String, self.currentRightPath.UTF8String)
     );
 
     self.totalDiffs = _diffResult->totalDiffs();
     self.currentDiffIndex = -1;
 
-    // Display results
     [self displayDiffResult];
+    [self updateStatusLabel];
+}
 
-    // Update status
+- (void)updateStatusLabel {
+    if (!_diffResult) {
+        self.statusLabel.stringValue = @"Ready";
+        return;
+    }
+
     if (_diffResult->identical) {
-        self.statusLabel.stringValue = @"Files are identical";
+        self.statusLabel.stringValue = @"Files are identical (options applied)";
     } else {
+        NSString *algorithm = @"Myers";
+        switch (_options.algorithm) {
+            case wm::DiffOptions::Algorithm::Minimal: algorithm = @"Minimal"; break;
+            case wm::DiffOptions::Algorithm::Patience: algorithm = @"Patience"; break;
+            case wm::DiffOptions::Algorithm::Histogram: algorithm = @"Histogram"; break;
+            default: break;
+        }
+
         self.statusLabel.stringValue =
-            [NSString stringWithFormat:@"%d difference(s) found", self.totalDiffs];
+            [NSString stringWithFormat:@"%d difference(s) found - %@",
+                self.totalDiffs, algorithm];
     }
 }
 
@@ -222,6 +314,37 @@
     [self.rightTextView.textStorage setAttributedString:rightAttr];
 }
 
+- (void)optionToggleChanged:(id)sender {
+    [self syncOptionsFromUI];
+    [self rerunIfPossible];
+}
+
+- (void)algorithmChanged:(id)sender {
+    [self syncOptionsFromUI];
+    [self rerunIfPossible];
+}
+
+- (void)syncOptionsFromUI {
+    _options.ignoreWhitespace = self.ignoreWhitespaceButton.state == NSControlStateValueOn;
+    _options.ignoreWhitespaceChange = self.ignoreWhitespaceChangeButton.state == NSControlStateValueOn;
+    _options.ignoreBlankLines = self.ignoreBlankLinesButton.state == NSControlStateValueOn;
+    _options.ignoreCase = self.ignoreCaseButton.state == NSControlStateValueOn;
+
+    switch (self.algorithmPopup.indexOfSelectedItem) {
+        case 1: _options.algorithm = wm::DiffOptions::Algorithm::Minimal; break;
+        case 2: _options.algorithm = wm::DiffOptions::Algorithm::Patience; break;
+        case 3: _options.algorithm = wm::DiffOptions::Algorithm::Histogram; break;
+        case 0:
+        default: _options.algorithm = wm::DiffOptions::Algorithm::Myers; break;
+    }
+}
+
+- (void)rerunIfPossible {
+    if (self.currentLeftPath && self.currentRightPath) {
+        [self runDiffForCurrentPaths];
+    }
+}
+
 #pragma mark - Navigation
 
 - (void)navigateToNextDiff {
@@ -268,6 +391,14 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)presentError:(NSString *)message {
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"Cannot compare selection";
+    alert.informativeText = message ?: @"Unknown error";
+    [alert addButtonWithTitle:@"OK"];
+    [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
 }
 
 @end
