@@ -889,10 +889,6 @@ typedef NS_ENUM(NSInteger, WMDisplayMode) {
     [self applyCurrentConflictResolution:wm::MergeResolution::TakeBase];
 }
 
-- (void)openSelectedFolderItemComparison:(id)sender {
-    [self openSelectedFolderItemComparison];
-}
-
 - (void)openSelectedFolderItemComparison {
     if (self.displayMode != WMDisplayModeFolderDiff || !_folderResult) {
         [self showAlert:@"Open this action from folder comparison results"];
