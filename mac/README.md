@@ -89,6 +89,11 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 
 ## Releasing builds
 
+**Release policy**
+
+- After every mac-related code change, produce and publish a macOS build.
+- Versioning starts at `0.0.1`; each new release increments by `+0.0.1`. Use `./mac/build-mac.sh --release` to package the app and automatically bump `mac/VERSION` for the next publish.
+
 1. Make your code changes on macOS.
 2. Run `./mac/build-mac.sh --release` to build and produce `mac/dist/WinMerge-macOS-<version>.zip`.
 3. Create a GitHub Release tagged `v<version>` (starting at `v0.0.1`, then `v0.0.2`, etc.) and upload the zip from `mac/dist/`.
