@@ -4,7 +4,9 @@
 
 [WinMerge](https://winmerge.org/) is an open-source differencing and merging tool for Windows.  
 It compares files and folders and presents differences in a clear, visual format that is easy to understand and work with.  
-WinMerge has been actively developed since 2000.
+WinMerge has been actively developed since 2000.  
+
+> macOS users: An experimental, macOS-native port with a reduced feature set (focused on side-by-side file compare, without Windows-only features like shell integration or archive support) is available in the [`mac/`](./mac) directory.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/h3v3ap1kswi1tyyt?svg=true)](https://ci.appveyor.com/project/sdottaka/winmerge/build/artifacts)
 [![CI](https://github.com/WinMerge/winmerge/workflows/CI/badge.svg)](https://github.com/WinMerge/winmerge/actions)
@@ -89,6 +91,9 @@ The WinMerge repository is organized as follows:
 
 - `Installer`  
   WinMerge installer sources.
+
+- `mac`  
+  Experimental macOS port using CMake and Cocoa. Focused on file comparison; Windows-only features such as shell extensions, archive browsing, and plugin DLLs are not included.
 
 - `Plugins`  
   Runtime plugin DLLs and scripts.
