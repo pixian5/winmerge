@@ -75,11 +75,41 @@
                         action:@selector(openFiles:)
                  keyEquivalent:@"o"];
     [fileMenu addItem:[NSMenuItem separatorItem]];
+    [fileMenu addItemWithTitle:@"Save Left File"
+                        action:@selector(saveLeftFile:)
+                 keyEquivalent:@"s"];
+    [fileMenu addItemWithTitle:@"Save Right File"
+                        action:@selector(saveRightFile:)
+                 keyEquivalent:@"S"];
+    [fileMenu addItem:[NSMenuItem separatorItem]];
     [fileMenu addItemWithTitle:@"Close Window"
                         action:@selector(performClose:)
                  keyEquivalent:@"w"];
     fileMenuItem.submenu = fileMenu;
     [mainMenu addItem:fileMenuItem];
+
+    // Edit menu
+    NSMenuItem *editMenuItem = [[NSMenuItem alloc] init];
+    NSMenu *editMenu = [[NSMenu alloc] initWithTitle:@"Edit"];
+    [editMenu addItemWithTitle:@"Copy"
+                        action:@selector(copy:)
+                 keyEquivalent:@"c"];
+    [editMenu addItemWithTitle:@"Select All"
+                        action:@selector(selectAll:)
+                 keyEquivalent:@"a"];
+    [editMenu addItem:[NSMenuItem separatorItem]];
+    [editMenu addItemWithTitle:@"Find…"
+                        action:@selector(performFindPanelAction:)
+                 keyEquivalent:@"f"];
+    [editMenu addItemWithTitle:@"Find Next"
+                        action:@selector(performFindPanelAction:)
+                 keyEquivalent:@"g"];
+    [editMenu addItemWithTitle:@"Find Previous"
+                        action:@selector(performFindPanelAction:)
+                 keyEquivalent:@"G"];
+    editMenuItem.submenu = editMenu;
+    [mainMenu addItem:editMenuItem];
+    [NSApp setServicesMenu:editMenu];
 
     // Navigate menu
     NSMenuItem *navMenuItem = [[NSMenuItem alloc] init];
@@ -101,6 +131,18 @@
 
     navMenuItem.submenu = navMenu;
     [mainMenu addItem:navMenuItem];
+
+    // Merge menu
+    NSMenuItem *mergeMenuItem = [[NSMenuItem alloc] init];
+    NSMenu *mergeMenu = [[NSMenu alloc] initWithTitle:@"Merge"];
+    [mergeMenu addItemWithTitle:@"Copy Selection to Right"
+                         action:@selector(copyToRight:)
+                  keyEquivalent:@"]"];
+    [mergeMenu addItemWithTitle:@"Copy Selection to Left"
+                         action:@selector(copyToLeft:)
+                  keyEquivalent:@"["];
+    mergeMenuItem.submenu = mergeMenu;
+    [mainMenu addItem:mergeMenuItem];
 
     // Window menu
     NSMenuItem *windowMenuItem = [[NSMenuItem alloc] init];
@@ -143,6 +185,22 @@
 
 - (void)prevDiff:(id)sender {
     [self.diffViewController navigateToPrevDiff];
+}
+
+- (void)saveLeftFile:(id)sender {
+    [self.diffViewController saveLeftFile];
+}
+
+- (void)saveRightFile:(id)sender {
+    [self.diffViewController saveRightFile];
+}
+
+- (void)copyToLeft:(id)sender {
+    [self.diffViewController copySelectionToLeft];
+}
+
+- (void)copyToRight:(id)sender {
+    [self.diffViewController copySelectionToRight];
 }
 
 @end

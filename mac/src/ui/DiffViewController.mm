@@ -6,6 +6,7 @@
 
 #import "DiffViewController.h"
 #import "DiffTextView.h"
+#import "LineNumberRulerView.h"
 #include "DiffEngine.h"
 #include "FileOperations.h"
 #include <memory>
@@ -141,6 +142,7 @@
     scrollView.hasVerticalScroller = YES;
     scrollView.hasHorizontalScroller = YES;
     scrollView.autohidesScrollers = YES;
+    scrollView.rulersVisible = YES;
 
     textView.minSize = NSMakeSize(0, 0);
     textView.maxSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
@@ -149,6 +151,10 @@
     textView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     textView.textContainer.containerSize = NSMakeSize(CGFLOAT_MAX, CGFLOAT_MAX);
     textView.textContainer.widthTracksTextView = NO;
+
+    // Add line number ruler
+    LineNumberRulerView *lineNumberRuler = [[LineNumberRulerView alloc] initWithScrollView:scrollView];
+    [scrollView setVerticalRulerView:lineNumberRuler];
 
     return scrollView;
 }
@@ -245,9 +251,30 @@
             default: break;
         }
 
+        // Count added, removed, and modified lines
+        int linesAdded = 0;
+        int linesRemoved = 0;
+        int linesModified = 0;
+
+        for (const auto& line : _diffResult->lines) {
+            switch (line.op) {
+                case wm::DiffOp::Added:
+                    linesAdded++;
+                    break;
+                case wm::DiffOp::Removed:
+                    linesRemoved++;
+                    break;
+                case wm::DiffOp::Modified:
+                    linesModified++;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         self.statusLabel.stringValue =
-            [NSString stringWithFormat:@"%d difference(s) found - %@",
-                self.totalDiffs, algorithm];
+            [NSString stringWithFormat:@"%d difference(s) - %@ algorithm | +%d -%d ~%d lines",
+                self.totalDiffs, algorithm, linesAdded, linesRemoved, linesModified];
     }
 }
 
@@ -399,6 +426,106 @@
     alert.informativeText = message ?: @"Unknown error";
     [alert addButtonWithTitle:@"OK"];
     [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
+}
+
+#pragma mark - File Operations
+
+- (void)saveLeftFile {
+    if (!self.currentLeftPath) {
+        [self showAlert:@"No left file to save"];
+        return;
+    }
+
+    NSString *content = self.leftTextView.string;
+    NSError *error = nil;
+    BOOL success = [content writeToFile:self.currentLeftPath
+                             atomically:YES
+                               encoding:NSUTF8StringEncoding
+                                  error:&error];
+
+    if (success) {
+        self.statusLabel.stringValue = [NSString stringWithFormat:@"Saved: %@",
+            [self.currentLeftPath lastPathComponent]];
+    } else {
+        [self showAlert:[NSString stringWithFormat:@"Failed to save left file: %@",
+            error.localizedDescription]];
+    }
+}
+
+- (void)saveRightFile {
+    if (!self.currentRightPath) {
+        [self showAlert:@"No right file to save"];
+        return;
+    }
+
+    NSString *content = self.rightTextView.string;
+    NSError *error = nil;
+    BOOL success = [content writeToFile:self.currentRightPath
+                             atomically:YES
+                               encoding:NSUTF8StringEncoding
+                                  error:&error];
+
+    if (success) {
+        self.statusLabel.stringValue = [NSString stringWithFormat:@"Saved: %@",
+            [self.currentRightPath lastPathComponent]];
+    } else {
+        [self showAlert:[NSString stringWithFormat:@"Failed to save right file: %@",
+            error.localizedDescription]];
+    }
+}
+
+- (void)showAlert:(NSString *)message {
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"File Operation";
+    alert.informativeText = message;
+    [alert addButtonWithTitle:@"OK"];
+    [alert beginSheetModalForWindow:self.view.window completionHandler:nil];
+}
+
+#pragma mark - Merge Operations
+
+- (void)copySelectionToLeft {
+    NSRange selectedRange = self.rightTextView.selectedRange;
+    if (selectedRange.length == 0) {
+        [self showAlert:@"No text selected in right pane"];
+        return;
+    }
+
+    NSString *selectedText = [self.rightTextView.string substringWithRange:selectedRange];
+
+    // Replace the selected range in the left view, or insert at cursor if nothing selected
+    NSRange leftRange = self.leftTextView.selectedRange;
+    if (leftRange.length == 0 && leftRange.location < self.leftTextView.string.length) {
+        // Insert at cursor
+        [self.leftTextView insertText:selectedText replacementRange:leftRange];
+    } else {
+        // Replace selection
+        [self.leftTextView insertText:selectedText replacementRange:leftRange];
+    }
+
+    self.statusLabel.stringValue = @"Copied selection to left";
+}
+
+- (void)copySelectionToRight {
+    NSRange selectedRange = self.leftTextView.selectedRange;
+    if (selectedRange.length == 0) {
+        [self showAlert:@"No text selected in left pane"];
+        return;
+    }
+
+    NSString *selectedText = [self.leftTextView.string substringWithRange:selectedRange];
+
+    // Replace the selected range in the right view, or insert at cursor if nothing selected
+    NSRange rightRange = self.rightTextView.selectedRange;
+    if (rightRange.length == 0 && rightRange.location < self.rightTextView.string.length) {
+        // Insert at cursor
+        [self.rightTextView insertText:selectedText replacementRange:rightRange];
+    } else {
+        // Replace selection
+        [self.rightTextView insertText:selectedText replacementRange:rightRange];
+    }
+
+    self.statusLabel.stringValue = @"Copied selection to right";
 }
 
 @end

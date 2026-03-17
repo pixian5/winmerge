@@ -69,6 +69,7 @@ set(APP_SOURCES
     src/ui/AppDelegate.mm
     src/ui/DiffViewController.mm
     src/ui/DiffTextView.mm
+    src/ui/LineNumberRulerView.mm
 )
 
 add_executable(WinMerge MACOSX_BUNDLE ${APP_SOURCES})

@@ -23,4 +23,12 @@
 - (void)navigateToNextDiff;
 - (void)navigateToPrevDiff;
 
+// File operations
+- (void)saveLeftFile;
+- (void)saveRightFile;
+
+// Merge operations
+- (void)copySelectionToLeft;
+- (void)copySelectionToRight;
+
 @end
