@@ -23,6 +23,8 @@
 // Navigate between differences
 - (void)navigateToNextDiff;
 - (void)navigateToPrevDiff;
+- (void)navigateToNextConflict;
+- (void)navigateToPrevConflict;
 
 // File operations
 - (void)saveLeftFile;
@@ -34,5 +36,9 @@
 // Merge operations
 - (void)copySelectionToLeft;
 - (void)copySelectionToRight;
+- (void)takeCurrentConflictFromLeft;
+- (void)takeCurrentConflictFromRight;
+- (void)takeCurrentConflictFromBase;
+- (void)openSelectedFolderItemComparison;
 
 @end

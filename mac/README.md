@@ -113,6 +113,7 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 - **Go to Line** navigation (⌘L) for left/right/both panes
 - File open dialog for selecting files to compare
 - **Folder comparison** (mac-native implementation) with added/removed/modified item listing
+- Folder compare filtering (all/modified/added/removed) and quick open of selected comparable file pair
 - Support for multiple diff algorithms (Myers, Patience, Histogram, Minimal)
 - Algorithm selection from the UI
 - Ignore options: whitespace, whitespace changes, blank lines, and case
@@ -120,6 +121,7 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 - **Edit and save files** (⌘S for left, ⌘⇧S for right)
 - **Copy/merge operations**: Copy selected text between left and right panes (⌘[ and ⌘])
 - **3-way merge foundation**: Base/Left/Right input and merged result generation with conflict markers
+- 3-way conflict navigation and per-conflict resolve actions (take left/right/base)
 - Copy, Select All, and standard text editing operations
 
 ### Not Included (macOS limitations / intentionally removed)

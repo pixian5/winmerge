@@ -24,6 +24,56 @@ static std::vector<std::string> splitLines(const std::string& text) {
     return lines;
 }
 
+static std::string lineForResolution(const MergeConflictRange& conflict) {
+    switch (conflict.resolution) {
+        case MergeResolution::TakeLeft: return conflict.leftLine;
+        case MergeResolution::TakeRight: return conflict.rightLine;
+        case MergeResolution::TakeBase: return conflict.baseLine;
+        case MergeResolution::Unresolved:
+        default: return {};
+    }
+}
+
+static void rebuildMergedTextAndRanges(ThreeWayMergeResult& result) {
+    std::ostringstream out;
+    int renderedLine = 0;
+    int unresolved = 0;
+
+    for (const auto& segment : result.segments) {
+        if (!segment.isConflict) {
+            out << segment.lineText << '\n';
+            renderedLine++;
+            continue;
+        }
+
+        if (segment.conflictIndex < 0 || static_cast<size_t>(segment.conflictIndex) >= result.conflicts.size()) {
+            continue;
+        }
+
+        auto& conflict = result.conflicts[static_cast<size_t>(segment.conflictIndex)];
+        int startLine = renderedLine + 1;
+        if (conflict.resolution == MergeResolution::Unresolved) {
+            out << "<<<<<<< LEFT\n";
+            out << conflict.leftLine << '\n';
+            out << "||||||| BASE\n";
+            out << conflict.baseLine << '\n';
+            out << "=======\n";
+            out << conflict.rightLine << '\n';
+            out << ">>>>>>> RIGHT\n";
+            renderedLine += 7;
+            unresolved++;
+        } else {
+            out << lineForResolution(conflict) << '\n';
+            renderedLine += 1;
+        }
+        conflict.startLine = startLine;
+        conflict.endLine = renderedLine;
+    }
+
+    result.mergedText = out.str();
+    result.conflictCount = unresolved;
+}
+
 } // namespace
 
 ThreeWayMergeResult ThreeWayMergeEngine::mergeFiles(const std::string& basePath,
@@ -35,9 +85,6 @@ ThreeWayMergeResult ThreeWayMergeEngine::mergeFiles(const std::string& basePath,
     const auto rightLines = splitLines(FileOps::readFile(rightPath));
 
     const size_t maxLines = std::max({baseLines.size(), leftLines.size(), rightLines.size()});
-    std::ostringstream out;
-    int mergedLineIndex = 0;
-
     auto lineAt = [](const std::vector<std::string>& lines, size_t index, bool& exists) -> std::string {
         if (index < lines.size()) {
             exists = true;
@@ -58,36 +105,40 @@ ThreeWayMergeResult ThreeWayMergeEngine::mergeFiles(const std::string& basePath,
         }
 
         if (left == right) {
-            out << left << '\n';
-            mergedLineIndex++;
+            result.segments.push_back({false, left, -1});
             continue;
         }
         if (left == base) {
-            out << right << '\n';
-            mergedLineIndex++;
+            result.segments.push_back({false, right, -1});
             continue;
         }
         if (right == base) {
-            out << left << '\n';
-            mergedLineIndex++;
+            result.segments.push_back({false, left, -1});
             continue;
         }
 
-        const int start = mergedLineIndex + 1;
-        out << "<<<<<<< LEFT\n";
-        out << left << '\n';
-        out << "||||||| BASE\n";
-        out << base << '\n';
-        out << "=======\n";
-        out << right << '\n';
-        out << ">>>>>>> RIGHT\n";
-        mergedLineIndex += 7;
-        result.conflicts.push_back({start, mergedLineIndex});
-        result.conflictCount++;
+        int conflictIndex = static_cast<int>(result.conflicts.size());
+        MergeConflictRange conflict;
+        conflict.baseLine = std::move(base);
+        conflict.leftLine = std::move(left);
+        conflict.rightLine = std::move(right);
+        conflict.resolution = MergeResolution::Unresolved;
+        result.conflicts.push_back(std::move(conflict));
+        result.segments.push_back({true, {}, conflictIndex});
     }
 
-    result.mergedText = out.str();
+    rebuildMergedTextAndRanges(result);
     return result;
+}
+
+void ThreeWayMergeEngine::resolveConflict(ThreeWayMergeResult& result,
+                                          size_t conflictIndex,
+                                          MergeResolution resolution) const {
+    if (conflictIndex >= result.conflicts.size()) {
+        return;
+    }
+    result.conflicts[conflictIndex].resolution = resolution;
+    rebuildMergedTextAndRanges(result);
 }
 
 } // namespace wm

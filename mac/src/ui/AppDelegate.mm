@@ -133,6 +133,12 @@
     nextItem.keyEquivalent = [NSString stringWithFormat:@"%C", (unichar)NSDownArrowFunctionKey];
     nextItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
     [navMenu addItem:nextItem];
+    NSMenuItem *nextConflictItem = [[NSMenuItem alloc] initWithTitle:@"Next Conflict"
+                                                              action:@selector(nextConflict:)
+                                                       keyEquivalent:@""];
+    nextConflictItem.keyEquivalent = [NSString stringWithFormat:@"%C", (unichar)NSDownArrowFunctionKey];
+    nextConflictItem.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagShift;
+    [navMenu addItem:nextConflictItem];
 
     NSMenuItem *prevItem = [[NSMenuItem alloc] initWithTitle:@"Previous Difference"
                                                       action:@selector(prevDiff:)
@@ -140,6 +146,12 @@
     prevItem.keyEquivalent = [NSString stringWithFormat:@"%C", (unichar)NSUpArrowFunctionKey];
     prevItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
     [navMenu addItem:prevItem];
+    NSMenuItem *prevConflictItem = [[NSMenuItem alloc] initWithTitle:@"Previous Conflict"
+                                                              action:@selector(prevConflict:)
+                                                       keyEquivalent:@""];
+    prevConflictItem.keyEquivalent = [NSString stringWithFormat:@"%C", (unichar)NSUpArrowFunctionKey];
+    prevConflictItem.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagShift;
+    [navMenu addItem:prevConflictItem];
 
     navMenuItem.submenu = navMenu;
     [mainMenu addItem:navMenuItem];
@@ -153,6 +165,25 @@
     [mergeMenu addItemWithTitle:@"Copy Selection to Left"
                          action:@selector(copyToLeft:)
                   keyEquivalent:@"["];
+    NSMenuItem *takeLeft = [[NSMenuItem alloc] initWithTitle:@"Take Current Conflict From Left"
+                                                      action:@selector(takeConflictFromLeft:)
+                                               keyEquivalent:@"["];
+    takeLeft.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagOption;
+    [mergeMenu addItem:takeLeft];
+    NSMenuItem *takeRight = [[NSMenuItem alloc] initWithTitle:@"Take Current Conflict From Right"
+                                                       action:@selector(takeConflictFromRight:)
+                                                keyEquivalent:@"]"];
+    takeRight.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagOption;
+    [mergeMenu addItem:takeRight];
+    NSMenuItem *takeBase = [[NSMenuItem alloc] initWithTitle:@"Take Current Conflict From Base"
+                                                      action:@selector(takeConflictFromBase:)
+                                               keyEquivalent:@"b"];
+    takeBase.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagOption;
+    [mergeMenu addItem:takeBase];
+    [mergeMenu addItem:[NSMenuItem separatorItem]];
+    [mergeMenu addItemWithTitle:@"Open Selected Folder Item Diff"
+                         action:@selector(openSelectedFolderItemDiff:)
+                  keyEquivalent:@"\r"];
     mergeMenuItem.submenu = mergeMenu;
     [mainMenu addItem:mergeMenuItem];
 
@@ -221,6 +252,14 @@
     [self.diffViewController presentGoToLineDialog];
 }
 
+- (void)nextConflict:(id)sender {
+    [self.diffViewController navigateToNextConflict];
+}
+
+- (void)prevConflict:(id)sender {
+    [self.diffViewController navigateToPrevConflict];
+}
+
 - (void)saveLeftFile:(id)sender {
     [self.diffViewController saveLeftFile];
 }
@@ -235,6 +274,22 @@
 
 - (void)copyToRight:(id)sender {
     [self.diffViewController copySelectionToRight];
+}
+
+- (void)takeConflictFromLeft:(id)sender {
+    [self.diffViewController takeCurrentConflictFromLeft];
+}
+
+- (void)takeConflictFromRight:(id)sender {
+    [self.diffViewController takeCurrentConflictFromRight];
+}
+
+- (void)takeConflictFromBase:(id)sender {
+    [self.diffViewController takeCurrentConflictFromBase];
+}
+
+- (void)openSelectedFolderItemDiff:(id)sender {
+    [self.diffViewController openSelectedFolderItemComparison];
 }
 
 @end
