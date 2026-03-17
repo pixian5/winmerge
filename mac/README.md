@@ -41,6 +41,7 @@ mac/
 - **macOS** 12.0 (Monterey) or later
 - **Xcode** 14.0 or later (with Command Line Tools)
 - **CMake** 3.20 or later
+- Note: Configuration/build is supported only on macOS. On Linux/Windows hosts the CMake configure step will fail due to the missing Apple Objective-C++ toolchain.
 
 Install CMake via Homebrew if needed:
 
@@ -83,6 +84,11 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 - File open dialog for selecting files to compare
 - Support for multiple diff algorithms (Myers, Patience, Histogram)
 - Whitespace comparison options
+
+### Not Included (macOS limitations / intentionally removed)
+- Windows Explorer shell integration and context menus
+- Windows-only archive browsing (7-Zip) and plugin DLLs
+- Windows-specific registry/options storage (uses NSUserDefaults instead)
 
 ### Planned
 - Folder comparison
