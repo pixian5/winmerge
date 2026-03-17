@@ -87,7 +87,6 @@ build/WinMerge.app/Contents/MacOS/WinMerge file1.txt file2.txt
 ### Not Included (macOS limitations / intentionally removed)
 - Windows Explorer shell integration and context menus
 - Windows-only archive browsing (7-Zip) and plugin DLLs
-- Folder comparison and 3-way merge (planned for future phases)
 - Windows-specific registry/options storage (uses NSUserDefaults instead)
 
 ### Planned
