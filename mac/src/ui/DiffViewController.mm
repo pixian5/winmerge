@@ -246,7 +246,7 @@
         }
 
         self.statusLabel.stringValue =
-            [NSString stringWithFormat:@"%d difference(s) found · %@",
+            [NSString stringWithFormat:@"%d difference(s) found - %@",
                 self.totalDiffs, algorithm];
     }
 }
