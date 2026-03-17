@@ -476,7 +476,14 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     NSModalResponse response = [alert runModal];
     if (response != NSAlertFirstButtonReturn) return;
 
-    NSInteger line = lineField.integerValue;
+    NSString *rawLineValue = [lineField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSScanner *scanner = [NSScanner scannerWithString:rawLineValue];
+    NSInteger line = 0;
+    if (rawLineValue.length == 0 || ![scanner scanInteger:&line] || !scanner.isAtEnd) {
+        [self showAlert:@"Please enter a valid integer line number."];
+        return;
+    }
+
     if (line < 1 || line > (NSInteger)maxLines) {
         [self showAlert:[NSString stringWithFormat:@"Line number must be between 1 and %lu.", (unsigned long)maxLines]];
         return;
