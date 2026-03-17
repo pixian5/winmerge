@@ -10,7 +10,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
         with:
           submodules: recursive
 
@@ -46,6 +46,10 @@ jobs:
           major="${BASH_REMATCH[1]}"
           minor="${BASH_REMATCH[2]}"
           patch="${BASH_REMATCH[3]}"
+          if [[ -z "${patch}" ]]; then
+            echo "Patch component missing from version '${base_version}'." >&2
+            exit 1
+          fi
 
           if [[ -z "${latest_tag}" ]]; then
             next_version="0.0.1"
@@ -69,14 +73,14 @@ jobs:
 
       - name: Upload build artifact to workflow run
         if: steps.version.outputs.release_exists != 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.3.1
         with:
           name: WinMerge-macOS-${{ steps.version.outputs.version }}.zip
           path: mac/dist/WinMerge-macOS-${{ steps.version.outputs.version }}.zip
 
       - name: Create GitHub release
         if: steps.version.outputs.release_exists != 'true'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2.0.0
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: WinMerge macOS ${{ steps.version.outputs.version }}
