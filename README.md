@@ -27,7 +27,7 @@ WinMerge provides a rich set of features for comparing and merging files and fol
   Inline differences within a line can also be shown.
 
 - **Folder Comparison**  
-  Compare the contents of two folders to see which files differ, are missing, or exist only on one side.  
+  Compare the contents of two or three folders to see which files differ, are missing, or exist only on one side.  
   Folder comparisons support **advanced filter expressions**, allowing you to include or exclude files and folders based on names, paths, sizes, timestamps, and other attributes.
 
 - **Merging**  
