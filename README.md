@@ -1,5 +1,7 @@
 # WinMerge
 
+- **macMerge**
+  
 [![logo](Docs/Logos/WinMerge_logo_24bit.png)](https://github.com/WinMerge/winmerge)
 
 [WinMerge](https://winmerge.org/) is an open-source differencing and merging tool for Windows.  
