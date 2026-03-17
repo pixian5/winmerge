@@ -1,7 +1,7 @@
 /*
  * DiffTextView.mm - Custom Text View Implementation
  *
- * Provides line-number-aware scrolling and read-only text display
+ * Provides line-number-aware scrolling and editable text display
  * for diff results.
  */
 
@@ -12,7 +12,7 @@
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.editable = NO;
+        self.editable = YES;  // Allow editing
         self.selectable = YES;
         self.richText = YES;
         self.usesFindBar = YES;
