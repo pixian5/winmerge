@@ -9,11 +9,20 @@
 #import "LineNumberRulerView.h"
 #include "DiffEngine.h"
 #include "FileOperations.h"
+#include "FolderCompareEngine.h"
+#include "ThreeWayMergeEngine.h"
 #include <memory>
+#include <vector>
 
 static NSString * const kWMDiffErrorDomain = @"org.winmerge.mac";
 static const NSInteger kWMDiffErrorMissingFile = 1;
-static const NSInteger kWMDiffErrorFolderUnsupported = 2;
+static const NSInteger kWMDiffErrorPathTypeMismatch = 2;
+
+typedef NS_ENUM(NSInteger, WMDisplayMode) {
+    WMDisplayModeFileDiff = 0,
+    WMDisplayModeFolderDiff = 1,
+    WMDisplayModeThreeWayMerge = 2,
+};
 
 @interface DiffViewController ()
 @property (assign, nonatomic) int currentDiffIndex;
@@ -23,17 +32,24 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
 @property (strong, nonatomic) NSButton *ignoreBlankLinesButton;
 @property (strong, nonatomic) NSButton *ignoreCaseButton;
 @property (strong, nonatomic) NSPopUpButton *algorithmPopup;
+@property (strong, nonatomic) NSPopUpButton *folderFilterPopup;
 @property (copy, nonatomic) NSString *currentLeftPath;
 @property (copy, nonatomic) NSString *currentRightPath;
+@property (copy, nonatomic) NSString *currentBasePath;
+@property (assign, nonatomic) WMDisplayMode displayMode;
 @end
 
 @implementation DiffViewController {
     std::unique_ptr<wm::DiffResult> _diffResult;
+    std::unique_ptr<wm::FolderCompareResult> _folderResult;
+    std::unique_ptr<wm::ThreeWayMergeResult> _threeWayResult;
     wm::DiffOptions _options;
+    std::vector<int> _folderDisplayedItemIndexes;
 }
 
 - (void)loadView {
     self.view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 1200, 700)];
+    self.displayMode = WMDisplayModeFileDiff;
     [self setupUI];
 }
 
@@ -112,12 +128,18 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     self.algorithmPopup.target = self;
     self.algorithmPopup.action = @selector(algorithmChanged:);
 
+    self.folderFilterPopup = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
+    [self.folderFilterPopup addItemsWithTitles:@[@"Folder: All", @"Folder: Modified", @"Folder: Added", @"Folder: Removed"]];
+    self.folderFilterPopup.target = self;
+    self.folderFilterPopup.action = @selector(folderFilterChanged:);
+
     NSStackView *optionsStack = [NSStackView stackViewWithViews:@[
         self.ignoreWhitespaceButton,
         self.ignoreWhitespaceChangeButton,
         self.ignoreBlankLinesButton,
         self.ignoreCaseButton,
-        self.algorithmPopup
+        self.algorithmPopup,
+        self.folderFilterPopup
     ]];
     optionsStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
     optionsStack.spacing = 12;
@@ -194,17 +216,78 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     self.leftLabel.stringValue = leftPath;
     self.rightLabel.stringValue = rightPath;
 
+    self.currentBasePath = nil;
     self.currentLeftPath = leftPath;
     self.currentRightPath = rightPath;
+    _threeWayResult.reset();
 
-    if (![self validatePathsAreFiles:leftPath right:rightPath]) {
+    if (![self validateSelectionPaths:leftPath right:rightPath]) {
         return;
     }
 
+    if (wm::FileOps::isDirectory(leftPath.UTF8String) && wm::FileOps::isDirectory(rightPath.UTF8String)) {
+        self.displayMode = WMDisplayModeFolderDiff;
+        [self runFolderCompareForCurrentPaths];
+        return;
+    }
+
+    self.displayMode = WMDisplayModeFileDiff;
     [self runDiffForCurrentPaths];
 }
 
-- (BOOL)validatePathsAreFiles:(NSString *)leftPath right:(NSString *)rightPath {
+- (void)mergeBaseFile:(NSString *)basePath leftFile:(NSString *)leftPath rightFile:(NSString *)rightPath {
+    auto baseExists = wm::FileOps::fileExists(basePath.UTF8String);
+    auto leftExists = wm::FileOps::fileExists(leftPath.UTF8String);
+    auto rightExists = wm::FileOps::fileExists(rightPath.UTF8String);
+    if (!baseExists || !leftExists || !rightExists) {
+        NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
+                                             code:kWMDiffErrorMissingFile
+                                         userInfo:@{ NSLocalizedDescriptionKey :
+                                                     @"Base/left/right file paths must all exist." }];
+        [self displayComparisonError:error];
+        return;
+    }
+    if (wm::FileOps::isDirectory(basePath.UTF8String) ||
+        wm::FileOps::isDirectory(leftPath.UTF8String) ||
+        wm::FileOps::isDirectory(rightPath.UTF8String)) {
+        NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
+                                             code:kWMDiffErrorPathTypeMismatch
+                                         userInfo:@{ NSLocalizedDescriptionKey :
+                                                     @"3-way merge currently supports files only." }];
+        [self displayComparisonError:error];
+        return;
+    }
+
+    self.currentBasePath = basePath;
+    self.currentLeftPath = leftPath;
+    self.currentRightPath = rightPath;
+    self.displayMode = WMDisplayModeThreeWayMerge;
+    _diffResult.reset();
+    _folderResult.reset();
+    self.leftLabel.stringValue = [NSString stringWithFormat:@"LEFT: %@", leftPath];
+    self.rightLabel.stringValue = [NSString stringWithFormat:@"MERGE RESULT: %@", [rightPath lastPathComponent]];
+
+    wm::ThreeWayMergeEngine mergeEngine;
+    _threeWayResult = std::make_unique<wm::ThreeWayMergeResult>(
+        mergeEngine.mergeFiles(basePath.UTF8String, leftPath.UTF8String, rightPath.UTF8String)
+    );
+
+    NSString *leftContent = [NSString stringWithUTF8String:wm::FileOps::readFile(leftPath.UTF8String).c_str()];
+    NSString *mergedContent = [NSString stringWithUTF8String:_threeWayResult->mergedText.c_str()];
+    if (!leftContent) leftContent = @"";
+    if (!mergedContent) mergedContent = @"";
+
+    NSDictionary *attrs = @{NSFontAttributeName: [NSFont monospacedSystemFontOfSize:12 weight:NSFontWeightRegular]};
+    [self.leftTextView.textStorage setAttributedString:[[NSAttributedString alloc] initWithString:leftContent attributes:attrs]];
+    [self.rightTextView.textStorage setAttributedString:[[NSAttributedString alloc] initWithString:mergedContent attributes:attrs]];
+
+    self.totalDiffs = _threeWayResult ? _threeWayResult->conflictCount : 0;
+    self.currentDiffIndex = -1;
+    self.statusLabel.stringValue = [NSString stringWithFormat:@"3-way merge: %d unresolved conflict(s) | base: %@",
+                                    self.totalDiffs, [basePath lastPathComponent]];
+}
+
+- (BOOL)validateSelectionPaths:(NSString *)leftPath right:(NSString *)rightPath {
     auto leftExists = wm::FileOps::fileExists(leftPath.UTF8String);
     auto rightExists = wm::FileOps::fileExists(rightPath.UTF8String);
 
@@ -217,12 +300,13 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
         return NO;
     }
 
-    if (wm::FileOps::isDirectory(leftPath.UTF8String) ||
-        wm::FileOps::isDirectory(rightPath.UTF8String)) {
+    bool leftIsDir = wm::FileOps::isDirectory(leftPath.UTF8String);
+    bool rightIsDir = wm::FileOps::isDirectory(rightPath.UTF8String);
+    if (leftIsDir != rightIsDir) {
         NSError *error = [NSError errorWithDomain:kWMDiffErrorDomain
-                                             code:kWMDiffErrorFolderUnsupported
+                                             code:kWMDiffErrorPathTypeMismatch
                                          userInfo:@{ NSLocalizedDescriptionKey :
-                                                     @"Folder comparison is not yet available on macOS. Please select two files." }];
+                                                     @"Please select either two files or two folders." }];
         [self displayComparisonError:error];
         return NO;
     }
@@ -230,8 +314,87 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     return YES;
 }
 
+- (void)runFolderCompareForCurrentPaths {
+    wm::FolderCompareEngine engine;
+    _folderResult = std::make_unique<wm::FolderCompareResult>(
+        engine.compareFolders(self.currentLeftPath.UTF8String, self.currentRightPath.UTF8String)
+    );
+    _diffResult.reset();
+    _threeWayResult.reset();
+    [self displayFolderCompareResult];
+}
+
+- (void)displayFolderCompareResult {
+    if (!_folderResult) return;
+    NSMutableAttributedString *leftAttr = [[NSMutableAttributedString alloc] init];
+    NSMutableAttributedString *rightAttr = [[NSMutableAttributedString alloc] init];
+    NSDictionary *defaultAttrs = @{NSFontAttributeName: [NSFont monospacedSystemFontOfSize:12 weight:NSFontWeightRegular]};
+    _folderDisplayedItemIndexes.clear();
+
+    auto passesFilter = [&](wm::DiffOp op) -> bool {
+        switch (self.folderFilterPopup.indexOfSelectedItem) {
+            case 1: return op == wm::DiffOp::Modified;
+            case 2: return op == wm::DiffOp::Added;
+            case 3: return op == wm::DiffOp::Removed;
+            default: return true;
+        }
+    };
+
+    for (size_t idx = 0; idx < _folderResult->items.size(); ++idx) {
+        const auto& item = _folderResult->items[idx];
+        if (!passesFilter(item.op)) {
+            continue;
+        }
+        _folderDisplayedItemIndexes.push_back(static_cast<int>(idx));
+        NSString *relative = [NSString stringWithUTF8String:item.relativePath.c_str()];
+        NSString *label = item.isDirectory
+            ? [NSString stringWithFormat:@"[DIR] %@\n", relative ?: @""]
+            : [NSString stringWithFormat:@"[FILE] %@\n", relative ?: @""];
+
+        NSColor *bgColor = nil;
+        switch (item.op) {
+            case wm::DiffOp::Added:
+                bgColor = [NSColor colorWithSRGBRed:0.85 green:1.0 blue:0.85 alpha:1.0];
+                break;
+            case wm::DiffOp::Removed:
+                bgColor = [NSColor colorWithSRGBRed:1.0 green:0.85 blue:0.85 alpha:1.0];
+                break;
+            case wm::DiffOp::Modified:
+                bgColor = [NSColor colorWithSRGBRed:1.0 green:1.0 blue:0.8 alpha:1.0];
+                break;
+            default:
+                break;
+        }
+
+        NSMutableDictionary *attrs = [defaultAttrs mutableCopy];
+        if (bgColor) attrs[NSBackgroundColorAttributeName] = bgColor;
+
+        if (item.op == wm::DiffOp::Added) {
+            [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:@" \n" attributes:defaultAttrs]];
+            [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
+        } else if (item.op == wm::DiffOp::Removed) {
+            [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
+            [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:@" \n" attributes:defaultAttrs]];
+        } else {
+            [leftAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
+            [rightAttr appendAttributedString:[[NSAttributedString alloc] initWithString:label attributes:attrs]];
+        }
+    }
+
+    [self.leftTextView.textStorage setAttributedString:leftAttr];
+    [self.rightTextView.textStorage setAttributedString:rightAttr];
+    self.totalDiffs = _folderResult->totalDiffs();
+    self.currentDiffIndex = -1;
+    self.statusLabel.stringValue = [NSString stringWithFormat:@"Folder compare: %d difference(s) | +%d -%d ~%d | shown %lu",
+                                    _folderResult->totalDiffs(), _folderResult->addedCount, _folderResult->removedCount,
+                                    _folderResult->modifiedCount, (unsigned long)_folderDisplayedItemIndexes.size()];
+}
+
 - (void)runDiffForCurrentPaths {
     if (!self.currentLeftPath || !self.currentRightPath) return;
+    self.displayMode = WMDisplayModeFileDiff;
+    _folderResult.reset();
+    _threeWayResult.reset();
 
     wm::DiffEngine engine;
     engine.setOptions(_options);
@@ -363,6 +526,12 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
     [self rerunIfPossible];
 }
 
+- (void)folderFilterChanged:(id)sender {
+    if (self.displayMode == WMDisplayModeFolderDiff) {
+        [self displayFolderCompareResult];
+    }
+}
+
 - (void)syncOptionsFromUI {
     _options.ignoreWhitespace = self.ignoreWhitespaceButton.state == NSControlStateValueOn;
     _options.ignoreWhitespaceChange = self.ignoreWhitespaceChangeButton.state == NSControlStateValueOn;
@@ -380,13 +549,21 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
 
 - (void)rerunIfPossible {
     if (self.currentLeftPath && self.currentRightPath) {
-        [self runDiffForCurrentPaths];
+        if (self.displayMode == WMDisplayModeFolderDiff) {
+            [self runFolderCompareForCurrentPaths];
+        } else if (self.displayMode == WMDisplayModeFileDiff) {
+            [self runDiffForCurrentPaths];
+        }
     }
 }
 
 #pragma mark - Navigation
 
 - (void)navigateToNextDiff {
+    if (self.displayMode == WMDisplayModeThreeWayMerge) {
+        [self navigateToNextConflict];
+        return;
+    }
     if (!_diffResult || self.totalDiffs == 0) return;
 
     self.currentDiffIndex++;
@@ -397,6 +574,10 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
 }
 
 - (void)navigateToPrevDiff {
+    if (self.displayMode == WMDisplayModeThreeWayMerge) {
+        [self navigateToPrevConflict];
+        return;
+    }
     if (!_diffResult || self.totalDiffs == 0) return;
 
     self.currentDiffIndex--;
@@ -407,6 +588,26 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
 }
 
 - (void)scrollToDiffAtIndex:(int)index {
+    if (self.displayMode == WMDisplayModeThreeWayMerge) {
+        if (!_threeWayResult || _threeWayResult->conflicts.empty()) return;
+        int unresolvedSeen = -1;
+        for (size_t i = 0; i < _threeWayResult->conflicts.size(); ++i) {
+            const auto& conflict = _threeWayResult->conflicts[i];
+            if (conflict.resolution != wm::MergeResolution::Unresolved) {
+                continue;
+            }
+            unresolvedSeen++;
+            if (unresolvedSeen == index) {
+                NSUInteger lineNum = conflict.startLine > 0 ? static_cast<NSUInteger>(conflict.startLine - 1) : 0;
+                [self.rightTextView scrollToLine:lineNum];
+                [self.leftTextView scrollToLine:lineNum];
+                self.statusLabel.stringValue = [NSString stringWithFormat:@"Conflict %d of %d",
+                                                index + 1, self.totalDiffs];
+                return;
+            }
+        }
+        return;
+    }
     if (!_diffResult) return;
 
     int diffCount = 0;
@@ -425,6 +626,104 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
             }
             diffCount++;
         }
+    }
+}
+
+- (void)navigateToNextConflict {
+    if (!_threeWayResult || self.totalDiffs == 0) return;
+    self.currentDiffIndex++;
+    if (self.currentDiffIndex >= self.totalDiffs) {
+        self.currentDiffIndex = 0;
+    }
+    [self scrollToDiffAtIndex:self.currentDiffIndex];
+}
+
+- (void)navigateToPrevConflict {
+    if (!_threeWayResult || self.totalDiffs == 0) return;
+    self.currentDiffIndex--;
+    if (self.currentDiffIndex < 0) {
+        self.currentDiffIndex = self.totalDiffs - 1;
+    }
+    [self scrollToDiffAtIndex:self.currentDiffIndex];
+}
+
+- (NSUInteger)lineCountForTextView:(NSTextView *)textView {
+    NSString *text = textView.string ?: @"";
+    if (text.length == 0) return 0;
+
+    NSUInteger lines = 0;
+    NSUInteger charIndex = 0;
+    while (charIndex < text.length) {
+        NSRange lineRange = [text lineRangeForRange:NSMakeRange(charIndex, 0)];
+        charIndex = NSMaxRange(lineRange);
+        lines++;
+    }
+    return lines;
+}
+
+- (void)presentGoToLineDialog {
+    NSUInteger leftLines = [self lineCountForTextView:self.leftTextView];
+    NSUInteger rightLines = [self lineCountForTextView:self.rightTextView];
+    NSUInteger maxLines = MAX(leftLines, rightLines);
+    if (maxLines == 0) {
+        [self showAlert:@"No content to navigate. Open files and run compare first."];
+        return;
+    }
+
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = @"Go to Line";
+    alert.informativeText = [NSString stringWithFormat:@"Enter a line number (1-%lu).", (unsigned long)maxLines];
+    [alert addButtonWithTitle:@"Go"];
+    [alert addButtonWithTitle:@"Cancel"];
+
+    NSTextField *lineField = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 220, 24)];
+    lineField.placeholderString = @"Line number";
+
+    NSPopUpButton *panePopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(0, 0, 220, 26) pullsDown:NO];
+    [panePopup addItemsWithTitles:@[@"Both panes", @"Left pane", @"Right pane"]];
+    [panePopup selectItemAtIndex:0];
+
+    NSStackView *accessory = [NSStackView stackViewWithViews:@[lineField, panePopup]];
+    accessory.orientation = NSUserInterfaceLayoutOrientationVertical;
+    accessory.spacing = 8;
+    alert.accessoryView = accessory;
+
+    if ([self.view.window makeFirstResponder:lineField]) {
+        [lineField selectText:nil];
+    }
+
+    NSModalResponse response = [alert runModal];
+    if (response != NSAlertFirstButtonReturn) return;
+
+    NSString *rawLineValue = [lineField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSScanner *scanner = [NSScanner scannerWithString:rawLineValue];
+    NSInteger line = 0;
+    if (rawLineValue.length == 0 || ![scanner scanInteger:&line] || !scanner.isAtEnd) {
+        [self showAlert:@"Please enter a valid integer line number."];
+        return;
+    }
+
+    if (line < 1 || line > (NSInteger)maxLines) {
+        [self showAlert:[NSString stringWithFormat:@"Line number must be between 1 and %lu.", (unsigned long)maxLines]];
+        return;
+    }
+
+    NSUInteger lineIndex = (NSUInteger)(line - 1);
+    switch (panePopup.indexOfSelectedItem) {
+        case 1:
+            [self.leftTextView scrollToLine:lineIndex];
+            self.statusLabel.stringValue = [NSString stringWithFormat:@"Jumped to line %ld in left pane", (long)line];
+            break;
+        case 2:
+            [self.rightTextView scrollToLine:lineIndex];
+            self.statusLabel.stringValue = [NSString stringWithFormat:@"Jumped to line %ld in right pane", (long)line];
+            break;
+        case 0:
+        default:
+            [self.leftTextView scrollToLine:lineIndex];
+            [self.rightTextView scrollToLine:lineIndex];
+            self.statusLabel.stringValue = [NSString stringWithFormat:@"Jumped to line %ld in both panes", (long)line];
+            break;
     }
 }
 
@@ -515,7 +814,121 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
 
 #pragma mark - Merge Operations
 
+- (void)refreshThreeWayMergedPane {
+    if (!_threeWayResult) return;
+    NSString *mergedContent = [NSString stringWithUTF8String:_threeWayResult->mergedText.c_str()];
+    if (!mergedContent) mergedContent = @"";
+    NSDictionary *attrs = @{NSFontAttributeName: [NSFont monospacedSystemFontOfSize:12 weight:NSFontWeightRegular]};
+    [self.rightTextView.textStorage setAttributedString:[[NSAttributedString alloc] initWithString:mergedContent attributes:attrs]];
+    self.totalDiffs = _threeWayResult->conflictCount;
+    if (self.totalDiffs == 0) {
+        self.currentDiffIndex = -1;
+        self.statusLabel.stringValue = @"3-way merge: all conflicts resolved";
+    } else {
+        if (self.currentDiffIndex < 0 || self.currentDiffIndex >= self.totalDiffs) {
+            self.currentDiffIndex = 0;
+        }
+        self.statusLabel.stringValue = [NSString stringWithFormat:@"3-way merge: %d unresolved conflict(s)", self.totalDiffs];
+        [self scrollToDiffAtIndex:self.currentDiffIndex];
+    }
+}
+
+- (NSInteger)selectedLineIndexForTextView:(NSTextView *)textView {
+    NSString *text = textView.string ?: @"";
+    NSUInteger loc = textView.selectedRange.location;
+    if (loc > text.length) loc = text.length;
+    NSUInteger line = 1;
+    NSUInteger idx = 0;
+    while (idx < loc && idx < text.length) {
+        NSRange lineRange = [text lineRangeForRange:NSMakeRange(idx, 0)];
+        idx = NSMaxRange(lineRange);
+        line++;
+    }
+    return (NSInteger)line;
+}
+
+- (NSInteger)currentUnresolvedConflictVectorIndex {
+    if (!_threeWayResult || self.totalDiffs <= 0 || self.currentDiffIndex < 0) return -1;
+    int unresolvedSeen = -1;
+    for (size_t i = 0; i < _threeWayResult->conflicts.size(); ++i) {
+        if (_threeWayResult->conflicts[i].resolution != wm::MergeResolution::Unresolved) {
+            continue;
+        }
+        unresolvedSeen++;
+        if (unresolvedSeen == self.currentDiffIndex) {
+            return (NSInteger)i;
+        }
+    }
+    return -1;
+}
+
+- (void)applyCurrentConflictResolution:(wm::MergeResolution)resolution {
+    if (!_threeWayResult) {
+        [self showAlert:@"No active 3-way merge session"];
+        return;
+    }
+    NSInteger vectorIndex = [self currentUnresolvedConflictVectorIndex];
+    if (vectorIndex < 0) {
+        [self showAlert:@"No unresolved conflict selected"];
+        return;
+    }
+    wm::ThreeWayMergeEngine engine;
+    engine.resolveConflict(*_threeWayResult, static_cast<size_t>(vectorIndex), resolution);
+    [self refreshThreeWayMergedPane];
+}
+
+- (void)takeCurrentConflictFromLeft {
+    [self applyCurrentConflictResolution:wm::MergeResolution::TakeLeft];
+}
+
+- (void)takeCurrentConflictFromRight {
+    [self applyCurrentConflictResolution:wm::MergeResolution::TakeRight];
+}
+
+- (void)takeCurrentConflictFromBase {
+    [self applyCurrentConflictResolution:wm::MergeResolution::TakeBase];
+}
+
+- (void)openSelectedFolderItemComparison {
+    if (self.displayMode != WMDisplayModeFolderDiff || !_folderResult) {
+        [self showAlert:@"Open this action from folder comparison results"];
+        return;
+    }
+
+    NSTextView *sourceView = self.rightTextView.selectedRange.length > 0 ? self.rightTextView : self.leftTextView;
+    NSInteger lineIndex = [self selectedLineIndexForTextView:sourceView];
+    NSInteger zeroBasedIndex = lineIndex - 1;
+    if (zeroBasedIndex < 0 || static_cast<size_t>(zeroBasedIndex) >= _folderDisplayedItemIndexes.size()) {
+        [self showAlert:@"Select a folder compare row first"];
+        return;
+    }
+
+    int itemIndex = _folderDisplayedItemIndexes[static_cast<size_t>(zeroBasedIndex)];
+    if (itemIndex < 0 || static_cast<size_t>(itemIndex) >= _folderResult->items.size()) {
+        [self showAlert:@"Invalid folder compare selection"];
+        return;
+    }
+
+    const auto& item = _folderResult->items[static_cast<size_t>(itemIndex)];
+    if (item.isDirectory) {
+        [self showAlert:@"Selected row is a folder. Choose a file row to open side-by-side diff."];
+        return;
+    }
+
+    NSString *leftChild = [self.currentLeftPath stringByAppendingPathComponent:[NSString stringWithUTF8String:item.relativePath.c_str()]];
+    NSString *rightChild = [self.currentRightPath stringByAppendingPathComponent:[NSString stringWithUTF8String:item.relativePath.c_str()]];
+    if (!wm::FileOps::fileExists(leftChild.UTF8String) || !wm::FileOps::fileExists(rightChild.UTF8String)) {
+        [self showAlert:@"Selected item exists only on one side and cannot be opened as a two-file diff"];
+        return;
+    }
+    [self compareLeftFile:leftChild rightFile:rightChild];
+}
+
 - (void)copySelectionToLeft {
+    if (self.displayMode == WMDisplayModeThreeWayMerge) {
+        [self takeCurrentConflictFromRight];
+        return;
+    }
     NSRange selectedRange = self.rightTextView.selectedRange;
     if (selectedRange.length == 0) {
         [self showAlert:@"No text selected in right pane"];
@@ -538,6 +951,10 @@ static const NSInteger kWMDiffErrorFolderUnsupported = 2;
 }
 
 - (void)copySelectionToRight {
+    if (self.displayMode == WMDisplayModeThreeWayMerge) {
+        [self takeCurrentConflictFromLeft];
+        return;
+    }
     NSRange selectedRange = self.leftTextView.selectedRange;
     if (selectedRange.length == 0) {
         [self showAlert:@"No text selected in left pane"];

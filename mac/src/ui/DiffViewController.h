@@ -18,17 +18,27 @@
 
 // Compare two files and display the results
 - (void)compareLeftFile:(NSString *)leftPath rightFile:(NSString *)rightPath;
+- (void)mergeBaseFile:(NSString *)basePath leftFile:(NSString *)leftPath rightFile:(NSString *)rightPath;
 
 // Navigate between differences
 - (void)navigateToNextDiff;
 - (void)navigateToPrevDiff;
+- (void)navigateToNextConflict;
+- (void)navigateToPrevConflict;
 
 // File operations
 - (void)saveLeftFile;
 - (void)saveRightFile;
 
+// Navigation helpers
+- (void)presentGoToLineDialog;
+
 // Merge operations
 - (void)copySelectionToLeft;
 - (void)copySelectionToRight;
+- (void)takeCurrentConflictFromLeft;
+- (void)takeCurrentConflictFromRight;
+- (void)takeCurrentConflictFromBase;
+- (void)openSelectedFolderItemComparison;
 
 @end

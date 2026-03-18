@@ -9,6 +9,8 @@ It compares files and folders and presents differences in a clear, visual format
 WinMerge has been actively developed since 2000.  
 
 > macOS users: An experimental, macOS-native port with a reduced feature set (focused on side-by-side file compare, without Windows-only features like shell integration or archive support) is available in the [`mac/`](./mac) directory.
+>
+> C# users: an experimental cross-platform CLI MVP is available in [`csharp/WinMerge.CrossPlatform`](./csharp/WinMerge.CrossPlatform) with `file-diff`, `folder-diff`, and `merge3` commands.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/h3v3ap1kswi1tyyt?svg=true)](https://ci.appveyor.com/project/sdottaka/winmerge/build/artifacts)
 [![CI](https://github.com/WinMerge/winmerge/workflows/CI/badge.svg)](https://github.com/WinMerge/winmerge/actions)
@@ -96,6 +98,9 @@ The WinMerge repository is organized as follows:
 
 - `mac`  
   Experimental macOS port using CMake and Cocoa. Focused on file comparison; Windows-only features such as shell extensions, archive browsing, and plugin DLLs are not included.
+
+- `csharp`  
+  Experimental cross-platform C# CLI MVP (`WinMerge.CrossPlatform`) for file diff, folder diff, and 3-way merge output.
 
 - `Plugins`  
   Runtime plugin DLLs and scripts.
